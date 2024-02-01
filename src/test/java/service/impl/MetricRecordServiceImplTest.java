@@ -6,11 +6,12 @@ import domain.model.MetricRecord;
 import domain.model.User;
 import domain.repository.MetricRecordRepository;
 import domain.repository.UserRepository;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import service.MetricRecordService;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -19,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class MetricRecordServiceImplTest {
 
     @Mock
@@ -27,15 +29,11 @@ class MetricRecordServiceImplTest {
     @Mock
     private UserRepository userRepository;
 
-    private MetricRecordService metricRecordService;
-
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-        metricRecordService = new MetricRecordServiceImpl(metricRecordRepository, userRepository);
-    }
+    @InjectMocks
+    private MetricRecordServiceImpl metricRecordService;
 
     @Test
+    @DisplayName("Возвращает метрики пользователя")
     public void testGetUserMetrics() throws NotFoundException {
         User user = new User("id", "username");
 
@@ -54,6 +52,7 @@ class MetricRecordServiceImplTest {
     }
 
     @Test
+    @DisplayName("Возвращает метрики всех пользователей")
     public void testGetAllUsersMetrics() {
         List<MetricRecord> expectedMetrics = Collections.emptyList();
         when(metricRecordRepository.getAllMetrics()).thenReturn(expectedMetrics);
@@ -63,6 +62,7 @@ class MetricRecordServiceImplTest {
     }
 
     @Test
+    @DisplayName("Возвращает запись метрик пользователя")
     public void testGetLastMetricRecord() throws NotFoundException {
         User user = new User("id", "username");
         Map<Metric, Integer> metrics = new HashMap<>();
@@ -78,6 +78,7 @@ class MetricRecordServiceImplTest {
     }
 
     @Test
+    @DisplayName("Добавление новой ежемесячной метрики")
     public void testAddNewMonthlyMetric() throws NotFoundException {
         User user = new User("id", "username");
         Map<Metric, Integer> metrics = new HashMap<>();
@@ -94,6 +95,7 @@ class MetricRecordServiceImplTest {
     }
 
     @Test
+    @DisplayName("Добавление новой ежемесячной метрики в один и тотже месяц возвращяет false")
     public void testAddNewMonthlyMetricWithSameMonth() throws NotFoundException {
         User user = new User("id", "username");
         Map<Metric, Integer> metrics = new HashMap<>();
@@ -103,13 +105,13 @@ class MetricRecordServiceImplTest {
 
         when(userRepository.findUserByUsername("username")).thenReturn(Optional.of(user));
         when(metricRecordRepository.getUserMetrics(user)).thenReturn(Collections.singletonList(metricRecord));
-        when(metricRecordRepository.saveMetricForUser(any(User.class), any(MetricRecord.class))).thenReturn(true);
 
         boolean added = metricRecordService.addNewMonthlyMetric("username", metrics);
         assertFalse(added);
     }
 
     @Test
+    @DisplayName("Получений новой метрики по месяцу")
     public void testGetMetricRecordByMonth() throws NotFoundException {
         User user = new User("id", "username");
         Map<Metric, Integer> metrics = new HashMap<>();
@@ -125,6 +127,7 @@ class MetricRecordServiceImplTest {
     }
 
     @Test
+    @DisplayName("Получений новой метрики по месяцу врзвращяет ошибку поиска")
     public void testGetMetricRecordByMonthNotFound() {
         User user = new User("id", "username");
         Map<Metric, Integer> metrics = new HashMap<>();
@@ -136,8 +139,6 @@ class MetricRecordServiceImplTest {
         when(metricRecordRepository.getUserMetrics(user)).thenReturn(Collections.singletonList(metricRecord));
 
 
-        assertThrows(NotFoundException.class, () -> {
-            metricRecordService.getMetricRecordByMonth(12, 1999, "username");
-        });
+        assertThrows(NotFoundException.class, () -> metricRecordService.getMetricRecordByMonth(12, 1999, "username"));
     }
 }

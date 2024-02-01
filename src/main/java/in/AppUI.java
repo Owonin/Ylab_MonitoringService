@@ -12,7 +12,12 @@ import service.UserService;
 
 import javax.naming.AuthenticationException;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.Set;
+import java.util.List;
+
 
 /**
  * Класс, представляющий пользовательский интерфейс приложения.
@@ -21,25 +26,31 @@ import java.util.*;
 public class AppUI {
 
     /**
+     * Формат вывода даты.
+     */
+    private final String DATE_FORMAT_PATTERN = "dd LLLL yyyy";
+
+    /**
      * Контекст аутентификации.
      */
-    AuthContext context;
+    private final AuthContext context;
     /**
      * Сервис пользователей.
      */
-    UserService userService;
+    private final UserService userService;
     /**
      * Сервис записей метрик.
      */
-    MetricRecordService metricRecordService;
+    private final MetricRecordService metricRecordService;
     /**
      * Сервис метрик.
      */
-    MetricService metricService;
+    private final MetricService metricService;
     /**
      * Сканер для чтения пользовательского ввода.
      */
-    Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
+
 
     /**
      * Конструктор класса.
@@ -95,7 +106,7 @@ public class AppUI {
             if (context.getCurrentUserRoles().stream().anyMatch(roles -> roles.toString().equals("ADMIN")))
                 userMenu.addItem("Просмотреть все показания", this::viewAllMetricsCommand);
         } catch (AuthenticationException e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
             return null;
         }
 
@@ -121,7 +132,7 @@ public class AppUI {
             System.out.println("Пользователь зарегистрирован успешно.");
             AuditLog.log("Пользователь " + username + " зарегистрирован успешно");
         } catch (AuthenticationException e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
         }
     }
 
@@ -152,7 +163,7 @@ public class AppUI {
 
 
         } catch (AuthenticationException | NotFoundException e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
             AuditLog.log(String.format("Ошибка при авторизации пользователя %s: %s", username, e.getMessage()));
 
         }
@@ -179,7 +190,7 @@ public class AppUI {
 
             for (Metric metric : metrics) {
                 System.out.println("Введите показания для метрики: " + metric.getName());
-                int val = 0;
+                int val;
 
                 val = Integer.parseInt(scanner.next());
 
@@ -195,11 +206,11 @@ public class AppUI {
                 AuditLog.log(String.format("Пользователь %s ошибочно ввел метрики", username));
             }
         } catch (NotFoundException | AuthenticationException e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
             AuditLog.log("Ошибка при вводе метрик " + e.getMessage());
         } catch (NumberFormatException e) {
             AuditLog.log(String.format("Пользователь %s Ввел неверный формат данных", username));
-            System.out.println("Введен не верный формат данных, введите числовое показание счетчика");
+            System.err.println("Введен не верный формат данных, введите числовое показание счетчика");
         }
     }
 
@@ -210,7 +221,7 @@ public class AppUI {
      * @param records Список записей метрик для отображения.
      */
     private void showRecord(List<MetricRecord> records) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd LLLL yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT_PATTERN);
         String formattedDateString;
 
         for (MetricRecord record : records) {
@@ -239,7 +250,7 @@ public class AppUI {
             records = metricRecordService.getUserMetrics(username);
 
         } catch (NotFoundException | AuthenticationException e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
             AuditLog.log(String.format("Ошибка при просмотре пользовательских метрик %s", e.getMessage()));
             return;
         }
@@ -265,14 +276,14 @@ public class AppUI {
      * Если записей нет или произошла ошибка аутентификации, выводит соответствующее сообщение об ошибке.
      */
     private void viewLastMetricCommand() {
-        List<MetricRecord> records = null;
+        List<MetricRecord> records;
 
         try {
             String username = context.getCurrentUsername();
             AuditLog.log(String.format("Пользователь %s запрашивает просмотр актуальной метрики", username));
             records = List.of(metricRecordService.getLastMetricRecord(username));
         } catch (NotFoundException | AuthenticationException e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
             AuditLog.log("Ошибка при просмотре актуальной метрике " + e.getMessage());
             return;
         }
@@ -305,7 +316,7 @@ public class AppUI {
             System.out.print("Введите год показания: ");
             year = Integer.parseInt(scanner.next());
 
-            MetricRecord record = null;
+            MetricRecord record;
 
             AuditLog.log(String.format("Пользователь %s запрашивает просмотр метрики за %d.%d", username, month, year));
             record = metricRecordService.getMetricRecordByMonth(month, year, username);
@@ -313,25 +324,11 @@ public class AppUI {
             showRecord(List.of(record));
 
         } catch (NotFoundException | AuthenticationException e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
             AuditLog.log(String.format("Ошибка при просмотре метрики %s", e.getMessage()));
         } catch (NumberFormatException e) {
             AuditLog.log(String.format("Пользователь %s Ввел неверный формат данных", username));
-            System.out.println("Введен не верный формат данных, введите числовое показание счетчика");
+            System.err.println("Введен не верный формат данных, введите числовое показание счетчика");
         }
     }
 }
-
-/**
- * P.S. Все строки нужно бы было перенести в константные поля, а методы куда-нибудь перенести, но я не успел(
- *
- *..........／＞　 フ............
- * 　　　　　| 　_　 _|
- * 　 　　　／`ミ _x 彡
- * 　　 　 /　　　 　 |
- * 　　　 /　 ヽ　　 ﾉ
- * 　／￣|　　 |　|　|
- * 　| (￣ヽ＿_ヽ_)_)
- * 　＼二つ
- * */
-

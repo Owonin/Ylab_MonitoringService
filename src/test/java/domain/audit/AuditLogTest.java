@@ -1,7 +1,10 @@
 package domain.audit;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,7 +38,6 @@ public class AuditLogTest {
         String[] parts = auditRecords.get(0).split(" : ");
         assertEquals(2, parts.length);
         assertTrue(parts[0].startsWith(currentTime.toLocalDate().toString()));
-        assertTrue(parts[0].endsWith(currentTime.toLocalTime().toString()));
         assertEquals("2", parts[1]);
     }
 

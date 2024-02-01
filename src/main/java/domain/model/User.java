@@ -59,7 +59,7 @@ public class User implements UserDetails {
      * @return Набор прав (ролей) пользователя.
      */
     @Override
-    public Set<?> getAuthorities() {
+    public Set<Role> getAuthorities() {
         return roles;
     }
 

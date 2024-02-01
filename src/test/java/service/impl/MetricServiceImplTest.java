@@ -2,10 +2,12 @@ package service.impl;
 
 import domain.model.Metric;
 import domain.repository.MetricRepository;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import service.MetricService;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,18 +15,17 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class MetricServiceImplTest {
-    @Mock
-    private static MetricRepository mockRepository;
-    private static MetricService metricService;
 
-    @BeforeAll
-    static void setUp() {
-        mockRepository = mock(MetricRepository.class);
-        metricService = new MetricServiceImpl(mockRepository);
-    }
+    @Mock
+    private MetricRepository mockRepository;
+
+    @InjectMocks
+    private MetricServiceImpl metricService;
 
     @Test
+    @DisplayName("Возвращяет все метрики")
     public void testGetAllMetric() {
         List<Metric> mockMetrics = new ArrayList<>();
         mockMetrics.add(new Metric("id", "hotwatr"));
@@ -38,6 +39,7 @@ class MetricServiceImplTest {
     }
 
     @Test
+    @DisplayName("Возвращяет количество метрик")
     public void testGetMetricsSize() {
         List<Metric> mockMetrics = new ArrayList<>();
         mockMetrics.add(new Metric("id", "hotwatr"));
@@ -51,6 +53,7 @@ class MetricServiceImplTest {
     }
 
     @Test
+    @DisplayName("Добавляет новую метрику")
     public void testAddNewMetric() {
 
         metricService.addNewMetric("New Metric");

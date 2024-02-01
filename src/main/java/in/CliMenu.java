@@ -10,13 +10,10 @@ import java.util.Scanner;
  */
 public class CliMenu {
 
-    /** Список пунктов меню. */
-    private final List<MenuItem> items;
-
-    /** Конструктор класса. */
-    public CliMenu() {
-        items = new ArrayList<>();
-    }
+    /**
+     * Список пунктов меню.
+     */
+    private final List<MenuItem> items = new ArrayList<>();
 
     /**
      * Добавляет пункт меню с указанным названием и действием.
@@ -28,14 +25,18 @@ public class CliMenu {
         items.add(new MenuItem(label, action));
     }
 
-    /** Выводит на консоль список пунктов меню. */
+    /**
+     * Выводит на консоль список пунктов меню.
+     */
     public void show() {
         for (int i = 0; i < items.size(); i++) {
             System.out.println((i + 1) + ". " + items.get(i).getLabel());
         }
     }
 
-    /** Запускает рендер меню в консоли. */
+    /**
+     * Запускает рендер меню в консоли.
+     */
     public void run() {
         Scanner scanner = new Scanner(System.in);
 
@@ -51,11 +52,10 @@ public class CliMenu {
             try {
                 int index = Integer.parseInt(choice) - 1;
 
-                if (index >= 0 && index < items.size()) {
-                    items.get(index).executeAction();
-                } else {
-                    System.out.println("Неверный номер пункта.");
-                }
+                items.get(index).executeAction();
+
+            } catch (NullPointerException e) {
+                System.out.println("Неверный номер пункта.");
             } catch (NumberFormatException e) {
                 System.out.println("Введите число или 'q'.");
             }

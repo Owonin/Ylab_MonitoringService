@@ -3,14 +3,18 @@ package domain.repository.impl;
 import domain.repository.UserRepository;
 import domain.model.User;
 
-import java.util.*;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Класс, реализующий хранение пользователей в оперативной памяти.
  */
 public class InMemoryUserRepository implements UserRepository {
 
-    Set<User> users = new HashSet<>();
+    private final Set<User> users = new HashSet<>();
 
     @Override
     public List<User> findAllUsers() {

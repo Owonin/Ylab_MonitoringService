@@ -12,6 +12,9 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class Metric {
 
+    private String id;
+    private String name;
+
     /**
      * Конструктор для создания новой метрики с указанным идентификатором и именем.
      *
@@ -22,8 +25,4 @@ public class Metric {
         this.id = id;
         this.name = name;
     }
-
-    private String id;
-    private String name;
-
 }

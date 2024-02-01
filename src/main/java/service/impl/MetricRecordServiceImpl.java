@@ -21,8 +21,8 @@ import java.util.Map;
  */
 public class MetricRecordServiceImpl implements MetricRecordService {
 
-    MetricRecordRepository metricRecordRepository;
-    UserRepository userRepository;
+    private final MetricRecordRepository metricRecordRepository;
+    private final UserRepository userRepository;
 
     /**
      * Конструктор класса

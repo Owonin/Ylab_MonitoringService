@@ -5,10 +5,12 @@ import domain.exception.NotFoundException;
 import domain.model.Role;
 import domain.model.User;
 import domain.repository.UserRepository;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.naming.AuthenticationException;
 import java.util.*;
@@ -17,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
 
     @Mock
@@ -25,16 +28,12 @@ class UserServiceImplTest {
     @Mock
     private AuthContext mockAuthContext;
 
+    @InjectMocks
     private UserServiceImpl userService;
 
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-        userService = new UserServiceImpl(mockUserRepository, mockAuthContext);
-    }
-
     @Test
-    public void testRegistrateUserSuccessfulRegistration() throws AuthenticationException {
+    @DisplayName("Регестрирует нового пользователя")
+    public void testRegistrateUserSuccessfulRegistration() {
         String username = "testUser";
         String password = "testPassword";
         Set<Role> roles = Collections.singleton(Role.USER);
@@ -49,6 +48,7 @@ class UserServiceImplTest {
     }
 
     @Test
+    @DisplayName("Регестрация нового пользователя вызывает ошибку аунтификации")
     public void testRegistrateUserUserAlreadyExists() {
         String username = "existingUser";
         String password = "password";
@@ -63,7 +63,8 @@ class UserServiceImplTest {
     }
 
     @Test
-    public void testLogin_SuccessfulLogin() throws NotFoundException, AuthenticationException {
+    @DisplayName("Успешный вход в аккаунт")
+    public void testLogin_SuccessfulLogin() throws AuthenticationException {
         String username = "testUser";
         String password = "testPassword";
         User user = new User("id", username);
@@ -78,6 +79,7 @@ class UserServiceImplTest {
     }
 
     @Test
+    @DisplayName("Вход в аккаунт вызывает ошибку")
     public void testLoginUserNotFound() {
         String username = "nonExistingUser";
         String password = "password";
@@ -91,6 +93,7 @@ class UserServiceImplTest {
     }
 
     @Test
+    @DisplayName("Получить список всех пользователей")
     public void testGetAllUsers() {
         List<User> mockUsers = Arrays.asList(
                 new User("id", "user1"),

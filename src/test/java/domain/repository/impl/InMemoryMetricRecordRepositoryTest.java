@@ -4,6 +4,7 @@ import domain.model.Metric;
 import domain.model.MetricRecord;
 import domain.model.User;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -23,6 +24,7 @@ class InMemoryMetricRecordRepositoryTest {
     }
 
     @Test
+    @DisplayName("Получие последний метрики возвращяет null")
     void getLastMetricForUserReturnsEmptyOptional() {
         User user = new User("testUser");
         Optional<MetricRecord> lastMetric = metricRepository.getLastMetricForUser(user);
@@ -31,6 +33,7 @@ class InMemoryMetricRecordRepositoryTest {
     }
 
     @Test
+    @DisplayName("Получие последний метрики возвращяет не пустую метрику")
     void getLastMetricForUserReturnsLastMetric() {
         Metric heatingReading = new Metric("id", "heatingReading");
         Map<Metric, Integer> metrics = Map.of(heatingReading, 100);
@@ -52,6 +55,7 @@ class InMemoryMetricRecordRepositoryTest {
     }
 
     @Test
+    @DisplayName("Получие метрики пользователя возвращяет null")
     void getUserMetricsWithNoMetricsReturnsEmptyList() {
         User user = new User("testUser");
         List<MetricRecord> userMetrics = metricRepository.getUserMetrics(user);
@@ -60,6 +64,7 @@ class InMemoryMetricRecordRepositoryTest {
     }
 
     @Test
+    @DisplayName("Получие метрики пользователя возвращяет не пустую метрику")
     void getUserMetricsReturnsMetricsList() {
         Metric heatingReading = new Metric("id", "heatingReading");
         Map<Metric, Integer> metrics = Map.of(heatingReading, 100);
@@ -83,6 +88,7 @@ class InMemoryMetricRecordRepositoryTest {
     }
 
     @Test
+    @DisplayName("Сохранение метрики")
     void saveMetricForUserCreatesNewUserMetricsList() {
         Metric heatingReading = new Metric("id", "heatingReading");
         Map<Metric, Integer> metrics = Map.of(heatingReading, 100);

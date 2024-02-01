@@ -19,10 +19,10 @@ import java.util.UUID;
  */
 public class UserServiceImpl implements UserService {
 
-    String USER_IS_ALREADY_PRESENT_ERROR_MESSAGE = "User with this username is already present";
+    private final String USER_IS_ALREADY_PRESENT_ERROR_MESSAGE = "User with this username is already present";
 
-    UserRepository userRepository;
-    AuthContext authContext;
+    private final UserRepository userRepository;
+    private final AuthContext authContext;
 
     /**
      * Конструктор класса
@@ -46,9 +46,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public void registrateUser(String username, String password, Set<Role> roles) throws AuthenticationException {
 
-        if (userRepository.findUserByUsername(username).isPresent())
+        if (userRepository.findUserByUsername(username).isPresent()) {
             throw new AuthenticationException(USER_IS_ALREADY_PRESENT_ERROR_MESSAGE);
-        else {
+        } else {
             User user = new User(UUID.randomUUID().toString());
             user.setPassword(password);
             user.setUsername(username);

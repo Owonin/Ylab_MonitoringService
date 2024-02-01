@@ -1,5 +1,7 @@
 package auth;
 
+import domain.model.Role;
+
 import javax.naming.AuthenticationException;
 import java.util.Set;
 
@@ -8,10 +10,14 @@ import java.util.Set;
  */
 public class AuthContext {
 
-    /** Сообщение для выводе сообщения об ошибке аутентифиции*/
+    /**
+     * Сообщение для выводе сообщения об ошибке аутентифиции
+     */
     private final String ERROR_MESSAGE = "Пользователь %s уже аутентифицирован";
 
-    /** Данные о текущем авторизованном пользователе*/
+    /**
+     * Данные о текущем авторизованном пользователе
+     */
     private UserDetails currentUser;
 
     /**
@@ -31,8 +37,9 @@ public class AuthContext {
      * @throws AuthenticationException Если пользователь уже аутентифицирован.
      */
     public UserDetails authenticateUser(UserDetails user) throws AuthenticationException {
-        if (isUserAuthenticated())
+        if (isUserAuthenticated()) {
             throwAuthenticateErrorWithFormatMessage();
+        }
         currentUser = user;
 
         return currentUser;
@@ -58,9 +65,10 @@ public class AuthContext {
      * @return Набор ролей текущего пользователя.
      * @throws AuthenticationException Если пользователь не аутентифицирован.
      */
-    public Set<?> getCurrentUserRoles() throws AuthenticationException {
-        if (!isUserAuthenticated())
+    public Set<Role> getCurrentUserRoles() throws AuthenticationException {
+        if (!isUserAuthenticated()) {
             throwAuthenticateErrorWithFormatMessage();
+        }
 
         return currentUser.getAuthorities();
     }
@@ -72,8 +80,10 @@ public class AuthContext {
      * @throws AuthenticationException Если пользователь не аутентифицирован.
      */
     public String getCurrentUsername() throws AuthenticationException {
-        if (!isUserAuthenticated())
+        if (!isUserAuthenticated()) {
             throwAuthenticateErrorWithFormatMessage();
+        }
+
         return currentUser.getUsername();
     }
 

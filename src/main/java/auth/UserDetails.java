@@ -1,5 +1,7 @@
 package auth;
 
+import domain.model.Role;
+
 import java.util.Set;
 
 
@@ -20,7 +22,7 @@ public interface UserDetails {
      *
      * @return Набор прав (ролей) пользователя.
      */
-    Set<?> getAuthorities();
+    Set<Role> getAuthorities();
 
     /**
      * Возвращает пароль пользователя.

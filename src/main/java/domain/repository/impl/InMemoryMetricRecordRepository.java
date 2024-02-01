@@ -5,13 +5,15 @@ import domain.model.User;
 import domain.repository.MetricRecordRepository;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
 
 /**
  * Класс, реализующий хранение записей о метриках в оперативной памяти.
  */
 public class InMemoryMetricRecordRepository implements MetricRecordRepository {
 
-    Map<User, List<MetricRecord>> metricMap = new HashMap<>();
+    private final Map<User, List<MetricRecord>> metricMap = new HashMap<>();
 
 
     /**
@@ -38,9 +40,7 @@ public class InMemoryMetricRecordRepository implements MetricRecordRepository {
      */
     @Override
     public List<MetricRecord> getUserMetrics(User user) {
-        if (metricMap.get(user) == null)
-            return List.of();
-        return metricMap.get(user);
+        return metricMap.getOrDefault(user, List.of());
     }
 
     /**
@@ -67,11 +67,7 @@ public class InMemoryMetricRecordRepository implements MetricRecordRepository {
      */
     @Override
     public List<MetricRecord> getAllMetrics() {
-        List<MetricRecord> allMetrics = new ArrayList<>();
-        for (List<MetricRecord> userMetrics : metricMap.values()) {
-            allMetrics.addAll(userMetrics);
-        }
-        return allMetrics;
+        return metricMap.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
     }
 
 }

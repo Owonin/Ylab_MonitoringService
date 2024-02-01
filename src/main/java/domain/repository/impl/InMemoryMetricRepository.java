@@ -13,7 +13,7 @@ import java.util.Set;
  */
 public class InMemoryMetricRepository implements MetricRepository {
 
-    Set<Metric> metrics = new HashSet<>();
+    private final Set<Metric> metrics = new HashSet<>();
 
     /**
      * Добавляет новую метрику в репозиторий.
