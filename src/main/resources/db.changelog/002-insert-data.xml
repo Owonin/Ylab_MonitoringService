@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd"
+        logicalFilePath="db/changelog.xml">
+    <changeSet id="002-insert-data" author="ylab">
+
+        <insert tableName="users" schemaName="private_schema">
+            <column name="username" value="User"/>
+            <column name="password" value="psw"/>
+        </insert>
+        <insert tableName="users" schemaName="private_schema">
+            <column name="username" value="User2"/>
+            <column name="password" value="psw"/>
+        </insert>
+        <insert tableName="users" schemaName="private_schema">
+            <column name="username" value="Admin"/>
+            <column name="password" value="psw"/>
+        </insert>
+
+        <insert tableName="roles" schemaName="private_schema">
+            <column name="name" value="USER"/>
+        </insert>
+        <insert tableName="roles" schemaName="private_schema">
+            <column name="name" value="ADMIN"/>
+        </insert>
+
+        <insert tableName="metrics" schemaName="private_schema">
+            <column name="name" value="Горячая вода"/>
+        </insert>
+        <insert tableName="metrics" schemaName="private_schema">
+            <column name="name" value="Холодная вода"/>
+        </insert>
+
+    </changeSet>
+</databaseChangeLog>

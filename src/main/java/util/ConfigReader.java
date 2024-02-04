@@ -1,6 +1,4 @@
-package config;
-
-import domain.exception.NotFoundException;
+package util;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -9,10 +7,16 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
 
+/**
+ * Класс реализующий чтение конфиг-файла
+ */
 public class ConfigReader {
     private final Properties properties;
     private static ConfigReader configReader;
 
+    /**
+     * Приватный конструктор класса
+     */
     private ConfigReader() {
         BufferedReader reader;
         URL resourceUrl = getClass().getResource("/configuration.properties");
@@ -34,6 +38,11 @@ public class ConfigReader {
         }
     }
 
+    /**
+     * Получение экземпляра объекта класса
+     *
+     * @return Эеземпляр обекта класса
+     */
     public static ConfigReader getInstance() {
         if (configReader == null) {
             configReader = new ConfigReader();
@@ -41,9 +50,15 @@ public class ConfigReader {
         return configReader;
     }
 
+    /**
+     * Чтение параметров конфиг-файла
+     *
+     * @param property  Параметр конфиг-файла
+     * @return          Значение параметра конфиг-файла
+     */
     public String getProperty(String property) {
         String baseUrl = properties.getProperty(property);
         if (baseUrl != null) return baseUrl;
-        else throw new RuntimeException(String.format("Property %s has not been found",property));
+        else throw new RuntimeException(String.format("Property %s has not been found", property));
     }
 }

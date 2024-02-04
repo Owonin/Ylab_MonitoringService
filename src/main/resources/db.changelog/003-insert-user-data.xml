@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd"
+        logicalFilePath="db/changelog.xml">
+    <changeSet id="003-insert-user-data.xml" author="ylab">
+        <!-- User 1 data -->
+        <insert tableName="metric_records" schemaName="private_schema">
+            <column name="metric_date" value="'2024-01-01'"/>
+            <column name="user_id" value="1"/>
+        </insert>
+
+        <insert tableName="metric_records" schemaName="private_schema">
+            <column name="metric_date" value="'2024-02-03'"/>
+            <column name="user_id" value="1"/>
+        </insert>
+
+        <!-- User 2 data -->
+
+        <insert tableName="metric_records" schemaName="private_schema">
+            <column name="metric_date" value="'2024-02-03'"/>
+            <column name="user_id" value="2"/>
+        </insert>
+
+        <insert tableName="user_roles" schemaName="private_schema">
+            <column name="role_id" value="2"/>
+            <column name="user_id" value="1"/>
+        </insert>
+        <insert tableName="user_roles" schemaName="private_schema">
+            <column name="role_id" value="2"/>
+            <column name="user_id" value="2"/>
+        </insert>
+        <insert tableName="user_roles" schemaName="private_schema">
+            <column name="role_id" value="1"/>
+            <column name="user_id" value="2"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

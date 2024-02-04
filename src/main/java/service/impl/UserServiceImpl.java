@@ -11,6 +11,7 @@ import service.UserService;
 
 import javax.naming.AuthenticationException;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
@@ -49,7 +50,7 @@ public class UserServiceImpl implements UserService {
         if (userRepository.findUserByUsername(username).isPresent()) {
             throw new AuthenticationException(USER_IS_ALREADY_PRESENT_ERROR_MESSAGE);
         } else {
-            User user = new User(UUID.randomUUID().toString());
+            User user = new User();
             user.setPassword(password);
             user.setUsername(username);
             user.setRoles(roles);

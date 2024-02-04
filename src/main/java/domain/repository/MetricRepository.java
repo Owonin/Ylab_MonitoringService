@@ -3,6 +3,7 @@ package domain.repository;
 import domain.model.Metric;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Интерфейс, определяющий операции для работы с метриками в репозитории.
@@ -13,14 +14,22 @@ public interface MetricRepository {
      * Добавляет новую метрику в репозиторий.
      *
      * @param metric Метрика, которую необходимо добавить.
-     * @return true, если метрика успешно добавлена, иначе false.
+     * @return Сохраненная метрика, иначе null
      */
-    boolean addMetric(Metric metric);
+    Metric save(Metric metric);
 
     /**
      * Возвращает список всех метрик из репозитория.
      *
      * @return Список всех метрик из репозитория.
      */
-    List<Metric> allMetrics();
+    List<Metric> findAllMetrics();
+
+
+    /**
+     * Возвращает метрику по названию метрики
+     *
+     * @return Опциональный объект, содержащий метрику
+     */
+    Optional<Metric> findMetricByName(String name);
 }

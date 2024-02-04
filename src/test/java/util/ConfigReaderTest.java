@@ -1,4 +1,4 @@
-package config;
+package util;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ class ConfigReaderTest {
     }
 
     @Test
-    @DisplayName("Получение конфигурации")
+    @DisplayName("Получение данных конфигурации")
     void testConfigReaderGetPropertyReturnProperty() {
         String expectedOutput = "testValue";
 
@@ -28,6 +28,6 @@ class ConfigReaderTest {
     @Test
     @DisplayName("Вызов ошибки при получении несуществующей конфигурации")
     void testConfigReaderGetPropertyThrowRuntimeErrorWithNonExistingProperty() {
-        assertThrows(RuntimeException.class,() -> ConfigReader.getInstance().getProperty("This property is not existing"));
+        assertThrows(RuntimeException.class, () -> ConfigReader.getInstance().getProperty("This property is not existing"));
     }
 }

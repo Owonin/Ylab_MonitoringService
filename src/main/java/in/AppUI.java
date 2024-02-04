@@ -1,22 +1,19 @@
 package in;
 
 import auth.AuthContext;
-import domain.audit.AuditLog;
 import domain.exception.NotFoundException;
+import domain.exception.UserNotFoundException;
 import domain.model.Metric;
 import domain.model.MetricRecord;
 import domain.model.Role;
+import service.AuditService;
 import service.MetricRecordService;
 import service.MetricService;
 import service.UserService;
 
 import javax.naming.AuthenticationException;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.Set;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -46,6 +43,11 @@ public class AppUI {
      * Сервис метрик.
      */
     private final MetricService metricService;
+
+    /**
+     * Сервис аудита.
+     */
+    private final AuditService auditService;
     /**
      * Сканер для чтения пользовательского ввода.
      */
@@ -59,13 +61,15 @@ public class AppUI {
      * @param userService         Сервис пользователей.
      * @param metricRecordService Сервис записей метрик.
      * @param metricService       Сервис метрик.
+     * @param auditService        Сервис аудита
      */
     public AppUI(AuthContext context, UserService userService, MetricRecordService metricRecordService,
-                 MetricService metricService) {
+                 MetricService metricService, AuditService auditService) {
         this.context = context;
         this.userService = userService;
         this.metricRecordService = metricRecordService;
         this.metricService = metricService;
+        this.auditService = auditService;
     }
 
 
@@ -120,7 +124,7 @@ public class AppUI {
      * Если регистрация не удалась из-за ошибки аутентификации, выводит сообщение об ошибке.
      */
     private void registerUserCommand() {
-        AuditLog.log("Анонимный пользователь пытается зарегестрироваться");
+        auditService.log("Анонимный пользователь пытается зарегестрироваться");
 
         System.out.print("Введите имя пользователя: ");
         String username = scanner.nextLine().trim();
@@ -130,8 +134,8 @@ public class AppUI {
         try {
             userService.registrateUser(username, password, Set.of(Role.USER));
             System.out.println("Пользователь зарегистрирован успешно.");
-            AuditLog.log("Пользователь " + username + " зарегистрирован успешно");
-        } catch (AuthenticationException e) {
+            auditService.log("Пользователь " + username + " зарегистрирован успешно", username);
+        } catch (AuthenticationException | UserNotFoundException e) {
             System.err.println(e.getMessage());
         }
     }
@@ -143,7 +147,7 @@ public class AppUI {
      * Если регистрация не удалась из-за ошибки аутентификации, выводит сообщение об ошибке.
      */
     private void loginUserCommand() {
-        AuditLog.log("Анонимный пользователь пытается авторизоваться");
+        auditService.log("Анонимный пользователь пытается авторизоваться");
 
         System.out.print("Введите имя пользователя: ");
         String username = scanner.nextLine().trim();
@@ -152,19 +156,20 @@ public class AppUI {
 
         try {
             userService.login(username, password);
-            System.out.println("Авторизация успешна. Добро пожаловать, " + context.getCurrentUsername() + "!");
-            AuditLog.log(String.format("Пользователь %s успешно авторизовался", username));
+            String currentUsername = context.getCurrentUsername();
+            System.out.println("Авторизация успешна. Добро пожаловать, " + currentUsername + "!");
+            auditService.log(String.format("Пользователь %s успешно авторизовался", currentUsername), currentUsername);
 
             CliMenu userMenu = createSubMenu();
             userMenu.run();
 
             context.logoutUser();
-            AuditLog.log(String.format("Пользователь %s вышел из аккаунта", username));
+            auditService.log(String.format("Пользователь %s вышел из аккаунта", currentUsername), currentUsername);
 
 
         } catch (AuthenticationException | NotFoundException e) {
             System.err.println(e.getMessage());
-            AuditLog.log(String.format("Ошибка при авторизации пользователя %s: %s", username, e.getMessage()));
+            auditService.log(String.format("Ошибка при авторизации пользователя %s: %s", username, e.getMessage()));
 
         }
     }
@@ -182,7 +187,7 @@ public class AppUI {
         try {
             username = context.getCurrentUsername();
 
-            AuditLog.log(String.format("Пользователь %s пытается добавить метрики", username));
+            auditService.log(String.format("Пользователь %s пытается добавить метрики", username), username);
             Map<Metric, Integer> metricsValues = new HashMap<>();
 
             List<Metric> metrics = metricService.getAllMetric();
@@ -194,22 +199,22 @@ public class AppUI {
 
                 val = Integer.parseInt(scanner.next());
 
-                AuditLog.log(String.format("Пользователь %s ввел метрику %s: %d", username, metric.getId(), val));
+                auditService.log(String.format("Пользователь %s ввел метрику %s: %d", username, metric.getId(), val), username);
                 metricsValues.put(metric, val);
             }
 
             if (metricRecordService.addNewMonthlyMetric(username, metricsValues)) {
                 System.out.println("Показания добавлены успешно.");
-                AuditLog.log(String.format("Пользователь %s успешно добавил метрики", username));
+                auditService.log(String.format("Пользователь %s успешно добавил метрики", username), username);
             } else {
                 System.out.println("Ошибка при подаче показаний");
-                AuditLog.log(String.format("Пользователь %s ошибочно ввел метрики", username));
+                auditService.log(String.format("Пользователь %s ошибочно ввел метрики", username), username);
             }
         } catch (NotFoundException | AuthenticationException e) {
             System.err.println(e.getMessage());
-            AuditLog.log("Ошибка при вводе метрик " + e.getMessage());
+            auditService.log("Ошибка при вводе метрик " + e.getMessage());
         } catch (NumberFormatException e) {
-            AuditLog.log(String.format("Пользователь %s Ввел неверный формат данных", username));
+            auditService.log(String.format("Пользователь %s Ввел неверный формат данных", username));
             System.err.println("Введен не верный формат данных, введите числовое показание счетчика");
         }
     }
@@ -246,12 +251,12 @@ public class AppUI {
         try {
             String username = context.getCurrentUsername();
 
-            AuditLog.log(String.format("Пользователь %s запрашивает просмотр своих метрик", username));
+            auditService.log(String.format("Пользователь %s запрашивает просмотр своих метрик", username), username);
             records = metricRecordService.getUserMetrics(username);
 
         } catch (NotFoundException | AuthenticationException e) {
             System.err.println(e.getMessage());
-            AuditLog.log(String.format("Ошибка при просмотре пользовательских метрик %s", e.getMessage()));
+            auditService.log(String.format("Ошибка при просмотре пользовательских метрик %s", e.getMessage()));
             return;
         }
 
@@ -265,7 +270,11 @@ public class AppUI {
      * Если записей нет или произошла ошибка аутентификации, выводит соответствующее сообщение об ошибке.
      */
     private void viewAllMetricsCommand() {
-        AuditLog.log("Администратор запрашивает просмотр всех метрик");
+        try {
+            auditService.log("Администратор запрашивает просмотр всех метрик", context.getCurrentUsername());
+        } catch (UserNotFoundException | AuthenticationException e) {
+            System.err.println("Ошибка во время просмотра всех метрик администратором");
+        }
         List<MetricRecord> records = metricRecordService.getAllUsersMetrics();
         showRecord(records);
     }
@@ -280,11 +289,11 @@ public class AppUI {
 
         try {
             String username = context.getCurrentUsername();
-            AuditLog.log(String.format("Пользователь %s запрашивает просмотр актуальной метрики", username));
+            auditService.log(String.format("Пользователь %s запрашивает просмотр актуальной метрики", username), username);
             records = List.of(metricRecordService.getLastMetricRecord(username));
         } catch (NotFoundException | AuthenticationException e) {
             System.err.println(e.getMessage());
-            AuditLog.log("Ошибка при просмотре актуальной метрике " + e.getMessage());
+            auditService.log("Ошибка при просмотре актуальной метрике " + e.getMessage());
             return;
         }
 
@@ -318,16 +327,16 @@ public class AppUI {
 
             MetricRecord record;
 
-            AuditLog.log(String.format("Пользователь %s запрашивает просмотр метрики за %d.%d", username, month, year));
+            auditService.log(String.format("Пользователь %s запрашивает просмотр метрики за %d.%d", username, month, year), username);
             record = metricRecordService.getMetricRecordByMonth(month, year, username);
 
             showRecord(List.of(record));
 
         } catch (NotFoundException | AuthenticationException e) {
             System.err.println(e.getMessage());
-            AuditLog.log(String.format("Ошибка при просмотре метрики %s", e.getMessage()));
+            auditService.log(String.format("Ошибка при просмотре метрики %s", e.getMessage()));
         } catch (NumberFormatException e) {
-            AuditLog.log(String.format("Пользователь %s Ввел неверный формат данных", username));
+            auditService.log(String.format("Пользователь %s Ввел неверный формат данных", username));
             System.err.println("Введен не верный формат данных, введите числовое показание счетчика");
         }
     }

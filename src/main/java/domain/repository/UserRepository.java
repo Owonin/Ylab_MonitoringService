@@ -21,8 +21,9 @@ public interface UserRepository {
      * Сохраняет пользователя в репозиторий.
      *
      * @param user Пользователь, который должен быть сохранен.
+     * @return Опциональный объект, содержащий пользователя.
      */
-    void save(User user);
+    User save(User user); //todo Optional
 
     /**
      * Находит пользователя в репозитории по его идентификатору.
@@ -30,7 +31,7 @@ public interface UserRepository {
      * @param id Идентификатор пользователя.
      * @return Опциональный объект, содержащий пользователя.
      */
-    Optional<User> findUserById(String id);
+    Optional<User> findUserById(int id);
 
     /**
      * Находит пользователя в репозитории по его имени пользователя.
