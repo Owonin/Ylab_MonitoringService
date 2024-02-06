@@ -6,6 +6,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.PostgreSQLContainer;
+import util.ConfigReader;
 import util.DBConnectionProvider;
 import util.MigrationExecutor;
 
@@ -31,7 +32,8 @@ class JdbcAuditRepositoryTest {
                 postgres.getPassword()
         );
 
-        MigrationExecutor.execute(connectionProvider, "db.changelog/test_changelog.xml");
+        String default_schema = ConfigReader.getInstance().getProperty("DEFAULT_SCHEMA");
+        MigrationExecutor.execute(connectionProvider, "db.changelog/test_changelog.xml", default_schema);
     }
 
     @AfterAll

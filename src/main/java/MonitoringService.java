@@ -1,12 +1,6 @@
 import auth.AuthContext;
-import domain.repository.AuditRepository;
-import domain.repository.MetricRecordRepository;
-import domain.repository.MetricRepository;
-import domain.repository.UserRepository;
-import domain.repository.jdbc.JdbcAuditRepository;
-import domain.repository.jdbc.JdbcMetricRecordRepository;
-import domain.repository.jdbc.JdbcMetricRepository;
-import domain.repository.jdbc.JdbcUserRepository;
+import domain.repository.*;
+import domain.repository.jdbc.*;
 import in.AppUI;
 import service.AuditService;
 import service.MetricRecordService;

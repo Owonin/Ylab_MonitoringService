@@ -4,6 +4,7 @@ import domain.model.Metric;
 import org.junit.jupiter.api.*;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import util.ConfigReader;
 import util.DBConnectionProvider;
 import util.MigrationExecutor;
 
@@ -33,7 +34,8 @@ class JdbcMetricRepositoryTest {
                 postgres.getPassword()
         );
 
-        MigrationExecutor.execute(connectionProvider, "db.changelog/test_changelog.xml");
+        String default_schema = ConfigReader.getInstance().getProperty("DEFAULT_SCHEMA");
+        MigrationExecutor.execute(connectionProvider, "db.changelog/test_changelog.xml", default_schema);
     }
 
     @AfterAll

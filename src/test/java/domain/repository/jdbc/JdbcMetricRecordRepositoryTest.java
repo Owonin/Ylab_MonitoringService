@@ -7,6 +7,7 @@ import domain.model.User;
 import org.junit.jupiter.api.*;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import util.ConfigReader;
 import util.DBConnectionProvider;
 import util.MigrationExecutor;
 
@@ -28,6 +29,7 @@ class JdbcMetricRecordRepositoryTest {
 
     private static DBConnectionProvider connectionProvider;
 
+    private final JdbcMetricValueRepository metricValueRepository = new JdbcMetricValueRepository();
     private final JdbcMetricRecordRepository metricRecordRepository = new JdbcMetricRecordRepository(connectionProvider);
     private final JdbcUserRepository userRepository = new JdbcUserRepository(connectionProvider);
     private final JdbcMetricRepository metricRepository = new JdbcMetricRepository(connectionProvider);
@@ -42,7 +44,11 @@ class JdbcMetricRecordRepositoryTest {
                 postgres.getPassword()
         );
 
-        MigrationExecutor.execute(connectionProvider, "db.changelog/test_changelog.xml");
+        ConfigReader.getInstance();
+
+
+        String default_schema = ConfigReader.getInstance().getProperty("DEFAULT_SCHEMA");
+        MigrationExecutor.execute(connectionProvider, "db.changelog/test_changelog.xml", default_schema);
     }
 
     @AfterAll

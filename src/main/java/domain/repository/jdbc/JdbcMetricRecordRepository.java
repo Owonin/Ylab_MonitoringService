@@ -5,6 +5,7 @@ import domain.model.Metric;
 import domain.model.MetricRecord;
 import domain.model.User;
 import domain.repository.MetricRecordRepository;
+import domain.repository.MetricValueRepository;
 import domain.repository.UserRepository;
 import util.DBConnectionProvider;
 
@@ -29,16 +30,17 @@ public class JdbcMetricRecordRepository implements MetricRecordRepository {
 
     public static final String INSERT_INTO_METRICS_RECORD = "INSERT INTO private_schema.metric_records " +
             "(metric_date, user_id) VALUES (?, ?)";
-    public static final String SELECT_METRICS_DATA = "SELECT metrics.id, metrics.name, metric_values.value " +
-            "FROM private_schema.metric_values JOIN private_schema.metrics on metric_values.metric_id = metrics.id WHERE metric_record_id = ?";
-    public static final String INSERT_INTO_METRIC_VALUES = "INSERT INTO private_schema.metric_values " +
-            "(value, metric_record_id, metric_id) VALUES (?, ?, ?)";
+
     public static final String SELECT_LAST_METRIC_DATA = "SELECT * FROM private_schema.metric_records " +
             "WHERE user_id = ? ORDER BY metric_date DESC LIMIT 1";
     public static final String SELECT_FROM_METRIC_RECORDS_WHERE_USER_ID = "SELECT * " +
             "FROM private_schema.metric_records WHERE user_id = ?";
     public static final String SELECT_FROM_METRIC_RECORDS = "SELECT * FROM private_schema.metric_records";
+    public static final String SELECT_METRICS_DATA = "SELECT metrics.id, metrics.name, metric_values.value " +
+            "FROM private_schema.metric_values JOIN private_schema.metrics on metric_values.metric_id = metrics.id WHERE metric_record_id = ?";
+
     private final DBConnectionProvider connectionProvider;
+    private final MetricValueRepository metricValueRepository = new JdbcMetricValueRepository();
 
     /**
      * Конструктор репозитория
@@ -161,7 +163,7 @@ public class JdbcMetricRecordRepository implements MetricRecordRepository {
      */
     private MetricRecord mapResultSetToMetricRecord(Connection connection, ResultSet resultSet) throws SQLException, UserNotFoundException {
         int id = resultSet.getInt("id");
-        Map<Metric, Integer> metrics = getMetricValues(connection, id);
+        Map<Metric, Integer> metrics = getMetricsData(connection, id);
         LocalDate metricDate = resultSet.getDate("metric_date").toLocalDate();
         int userId = resultSet.getInt("user_id");
 
@@ -169,55 +171,6 @@ public class JdbcMetricRecordRepository implements MetricRecordRepository {
          User user = userRepository.findUserById(userId).orElseThrow(() -> new UserNotFoundException("User is not found"));
 
         return new MetricRecord(id, metrics, metricDate, user);
-    }
-
-    /**
-     * Сохранение значений записей метрик в БД
-     *
-     * @param connection Соединение с БД
-     * @param metrics    Запись метрик
-     */
-    private void saveMetricValue(Connection connection, MetricRecord metrics) throws SQLException {
-
-        for (Metric metric : metrics.getMetrics().keySet()) {
-            try (PreparedStatement statement = connection.prepareStatement(
-                    INSERT_INTO_METRIC_VALUES)) {
-                statement.setInt(1, metrics.getMetrics().get(metric));
-                statement.setInt(2, metrics.getId());
-                statement.setInt(3, metric.getId());
-
-                statement.executeUpdate();
-            }
-        }
-
-    }
-
-    /**
-     * Получение значений метрик из базы данных по ключу записи метрик
-     *
-     * @param connection     Соединение с БД
-     * @param metricRecordId ID значений метрик
-     * @return Данные о значениях метрик в формате ключ-значение
-     */
-    private Map<Metric, Integer> getMetricValues(Connection connection, int metricRecordId) {
-        Map<Metric, Integer> metricValues = new HashMap<>();
-        try (PreparedStatement statement = connection.prepareStatement(SELECT_METRICS_DATA)) {
-            statement.setInt(1, metricRecordId);
-
-            try (ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    int metricId = resultSet.getInt("id");
-                    String metricName = resultSet.getString("name");
-                    int value = resultSet.getInt("value");
-                    Metric metric = new Metric(metricId, metricName);
-                    metricValues.put(metric, value);
-                }
-            }
-        } catch (SQLException e) {
-            System.err.println("Ошибка во время выполнения SQL запроса " + e.getMessage());
-        }
-
-        return metricValues;
     }
 
     /**
@@ -240,11 +193,40 @@ public class JdbcMetricRecordRepository implements MetricRecordRepository {
                 ResultSet generatedKeys = statement.getGeneratedKeys();
                 if (generatedKeys.next()) {
                     metric.setId(generatedKeys.getInt(1));
-                    saveMetricValue(connection, metric);
+                    metricValueRepository.saveMetricValue(connection, metric);
                     return metric;
                 }
             }
         }
         return null;
+    }
+
+
+    /**
+     * Получение значений метрик из базы данных по ключу записи метрик
+     *
+     * @param connection     Соединение с БД
+     * @param metricRecordId ID значений метрик
+     * @return Данные о значениях метрик в формате ключ-значение
+     */
+    public Map<Metric, Integer> getMetricsData(Connection connection, int metricRecordId) {
+        Map<Metric, Integer> metricValues = new HashMap<>();
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_METRICS_DATA)) {
+            statement.setInt(1, metricRecordId);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    int metricId = resultSet.getInt("id");
+                    String metricName = resultSet.getString("name");
+                    int value = resultSet.getInt("value");
+                    Metric metric = new Metric(metricId, metricName);
+                    metricValues.put(metric, value);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Ошибка во время выполнения SQL запроса " + e.getMessage());
+        }
+
+        return metricValues;
     }
 }
