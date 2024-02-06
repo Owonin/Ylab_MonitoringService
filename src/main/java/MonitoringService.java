@@ -30,6 +30,8 @@ public class MonitoringService {
         //Получение объекта для чтения конфиг-файла
         ConfigReader configReader = ConfigReader.getInstance();
 
+        String defaultLiquebaseSchema = configReader.getProperty("DEFAULT_SCHEMA");
+
         //Создание данных о соединении
         DBConnectionProvider connectionProvider = new DBConnectionProvider(
                 configReader.getProperty("URL"),
@@ -55,7 +57,7 @@ public class MonitoringService {
         AppUI appUI = new AppUI(authContext, userService, meterRecordService, metricService, auditService);
 
         // Инициализация начальных данных
-        jdbcBootstrap(connectionProvider);
+        jdbcBootstrap(connectionProvider, defaultLiquebaseSchema);
 
         // Запуск главного меню приложения
         appUI.createMainMenu().run();
@@ -67,7 +69,7 @@ public class MonitoringService {
      *
      * @param connectionProvider данные о подключении к БД.
      */
-    private static void jdbcBootstrap(DBConnectionProvider connectionProvider) {
-        MigrationExecutor.execute(connectionProvider, "db.changelog/changelog.xml");
+    private static void jdbcBootstrap(DBConnectionProvider connectionProvider, String defaultLiquebaseSchema) {
+        MigrationExecutor.execute(connectionProvider, "db.changelog/changelog.xml", defaultLiquebaseSchema);
     }
 }
