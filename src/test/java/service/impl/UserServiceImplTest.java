@@ -54,7 +54,7 @@ class UserServiceImplTest {
         String password = "password";
         Set<Role> roles = Collections.singleton(Role.USER);
 
-        when(mockUserRepository.findUserByUsername(username)).thenReturn(Optional.of(new User("id", username)));
+        when(mockUserRepository.findUserByUsername(username)).thenReturn(Optional.of(new User(1, username)));
 
         AuthenticationException exception = assertThrows(AuthenticationException.class,
                 () -> userService.registrateUser(username, password, roles));
@@ -67,7 +67,7 @@ class UserServiceImplTest {
     public void testLogin_SuccessfulLogin() throws AuthenticationException {
         String username = "testUser";
         String password = "testPassword";
-        User user = new User("id", username);
+        User user = new User(1, username);
         user.setPassword(password);
 
         when(mockUserRepository.findUserByUsername(username)).thenReturn(Optional.of(user));
@@ -96,8 +96,8 @@ class UserServiceImplTest {
     @DisplayName("Получить список всех пользователей")
     public void testGetAllUsers() {
         List<User> mockUsers = Arrays.asList(
-                new User("id", "user1"),
-                new User("id", "user2")
+                new User(1, "user1"),
+                new User(1, "user2")
         );
 
         when(mockUserRepository.findAllUsers()).thenReturn(mockUsers);

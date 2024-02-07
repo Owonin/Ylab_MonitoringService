@@ -1,6 +1,7 @@
 package domain.model;
 
 import auth.UserDetails;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,14 +14,26 @@ import java.util.Set;
  */
 @Getter
 @Setter
+@EqualsAndHashCode
 public class User implements UserDetails {
+
+    private Integer userId;
+    private String username;
+    private String password;
+    private Set<Role> roles;
+
+    /**
+     * Конструктор для создания нового пользователя с указанным идентификатором.
+     */
+    public User(){
+    }
 
     /**
      * Конструктор для создания нового пользователя с указанным идентификатором.
      *
      * @param userId Идентификатор пользователя.
      */
-    public User(String userId) {
+    public User(int userId) {
         this.userId = userId;
     }
 
@@ -30,17 +43,38 @@ public class User implements UserDetails {
      * @param userId   Идентификатор пользователя.
      * @param username Никнейм пользователя.
      */
-    public User(String userId, String username) {
+    public User(int userId, String username) {
         this.userId = userId;
         this.username = username;
     }
 
-    private String userId;
-    private String username;
-    private String password;
-    private Set<Role> roles;
-    private List<MetricRecord> metrics;
+    /**
+     * Конструктор для создания нового пользователя с указанным идентификатором.
+     *
+     * @param userId   Идентификатор пользователя.
+     * @param username Никнейм пользователя.
+     * @param password Пароль пользователя
+     */
+    public User(int userId, String username, String password) {
+        this.userId = userId;
+        this.username = username;
+        this.password = password;
+    }
 
+    /**
+     * Конструктор для создания нового пользователя с указанным идентификатором.
+     *
+     * @param userId   Идентификатор пользователя.
+     * @param username Никнейм пользователя.
+     * @param password Пароль пользователя
+     * @param roles    Роли пользователя
+     */
+    public User(int userId, String username, String password, Set<Role> roles) {
+        this.userId = userId;
+        this.username = username;
+        this.password = password;
+        this.roles = roles;
+    }
 
     /**
      * Возвращает имя пользователя.
@@ -71,18 +105,5 @@ public class User implements UserDetails {
     @Override
     public String getPassword() {
         return password;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return userId.equals(user.userId) && username.equals(user.username) && password.equals(user.password) && roles.equals(user.roles) && Objects.equals(metrics, user.metrics);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(userId, username, password, roles);
     }
 }

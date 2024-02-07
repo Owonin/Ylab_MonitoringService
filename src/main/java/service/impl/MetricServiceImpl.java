@@ -5,7 +5,6 @@ import domain.repository.MetricRepository;
 import service.MetricService;
 
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Класс, представляющий реализацию сервиса работы с метриками.
@@ -30,7 +29,7 @@ public class MetricServiceImpl implements MetricService {
      */
     @Override
     public List<Metric> getAllMetric() {
-        return repository.allMetrics();
+        return repository.findAllMetrics();
     }
 
     /**
@@ -40,7 +39,7 @@ public class MetricServiceImpl implements MetricService {
      */
     @Override
     public int getMetricsSize() {
-        return repository.allMetrics().size();
+        return repository.findAllMetrics().size();
     }
 
     /**
@@ -50,8 +49,8 @@ public class MetricServiceImpl implements MetricService {
      */
     @Override
     public void addNewMetric(String name) {
-        Metric metric = new Metric(UUID.randomUUID().toString(), name);
-        repository.addMetric(metric);
+        Metric metric = new Metric(name);
+        repository.save(metric);
     }
 
 }

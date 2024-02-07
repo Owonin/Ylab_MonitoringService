@@ -48,7 +48,7 @@ public class MetricRecordServiceImpl implements MetricRecordService {
         User user = userRepository.findUserByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
 
-        return metricRecordRepository.getUserMetrics(user);
+        return metricRecordRepository.findUserMetrics(user);
     }
 
     /**
@@ -65,7 +65,7 @@ public class MetricRecordServiceImpl implements MetricRecordService {
     public MetricRecord getLastMetricRecord(String username) throws NotFoundException {
         User user = userRepository.findUserByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
-        return metricRecordRepository.getLastMetricForUser(user)
+        return metricRecordRepository.findLastMetricForUser(user)
                 .orElseThrow(() -> new MetricRecordNotFoundException(username));
     }
 
@@ -81,7 +81,7 @@ public class MetricRecordServiceImpl implements MetricRecordService {
     public boolean addNewMonthlyMetric(String username, Map<Metric, Integer> metrics) throws NotFoundException {
         User user = userRepository.findUserByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
-        List<MetricRecord> lastMetrics = metricRecordRepository.getUserMetrics(user);
+        List<MetricRecord> lastMetrics = metricRecordRepository.findUserMetrics(user);
         int lastMetricsSize = lastMetrics.size();
 
         MetricRecord newRecord = new MetricRecord(new HashMap<>(metrics), LocalDate.now(), user);
@@ -89,13 +89,13 @@ public class MetricRecordServiceImpl implements MetricRecordService {
         Month currentMonth = LocalDate.now().getMonth();
 
         if (lastMetrics.isEmpty()) {
-            metricRecordRepository.saveMetricForUser(user, newRecord);
+            metricRecordRepository.save(user, newRecord);
             return true;
         } else {
             MetricRecord lastMetric = lastMetrics.get(lastMetricsSize - 1);
 
             if (lastMetric.getMetricDate().getMonth() != currentMonth) {
-                metricRecordRepository.saveMetricForUser(user, newRecord);
+                metricRecordRepository.save(user, newRecord);
                 return true;
             }
 
@@ -117,7 +117,7 @@ public class MetricRecordServiceImpl implements MetricRecordService {
         LocalDate requiredDate = LocalDate.of(year, month, 1);
         User user = userRepository.findUserByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
-        List<MetricRecord> metrics = metricRecordRepository.getUserMetrics(user);
+        List<MetricRecord> metrics = metricRecordRepository.findUserMetrics(user);
 
         return metrics.stream()
                 .filter(date -> (date.getMetricDate().getMonthValue() == requiredDate.getMonthValue()) &&

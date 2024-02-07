@@ -17,7 +17,7 @@ public interface MetricRecordRepository {
      * @param user Пользователь, для которого запрашивается последняя запись метрик.
      * @return Опциональный объект, содержащий последнюю запись метрик пользователя.
      */
-    Optional<MetricRecord> getLastMetricForUser(User user);
+    Optional<MetricRecord> findLastMetricForUser(User user);
 
     /**
      * Возвращает список записей метрик для указанного пользователя.
@@ -25,7 +25,7 @@ public interface MetricRecordRepository {
      * @param user Пользователь, для которого запрашиваются записи метрик.
      * @return Список записей метрик пользователя.
      */
-    List<MetricRecord> getUserMetrics(User user);
+    List<MetricRecord> findUserMetrics(User user);
 
     /**
      * Сохраняет запись метрик для указанного пользователя.
@@ -34,7 +34,7 @@ public interface MetricRecordRepository {
      * @param metric Запись метрик, которую необходимо сохранить.
      * @return true, если запись метрик успешно сохранена, иначе false.
      */
-    boolean saveMetricForUser(User user, MetricRecord metric);
+    MetricRecord save(User user, MetricRecord metric);
 
     /**
      * Возвращает список всех записей метрик из репозитория.

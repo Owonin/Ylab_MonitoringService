@@ -28,10 +28,10 @@ class MetricServiceImplTest {
     @DisplayName("Возвращяет все метрики")
     public void testGetAllMetric() {
         List<Metric> mockMetrics = new ArrayList<>();
-        mockMetrics.add(new Metric("id", "hotwatr"));
-        mockMetrics.add(new Metric("id2", "coldWater"));
+        mockMetrics.add(new Metric(1, "hotwatr"));
+        mockMetrics.add(new Metric(2, "coldWater"));
 
-        when(mockRepository.allMetrics()).thenReturn(mockMetrics);
+        when(mockRepository.findAllMetrics()).thenReturn(mockMetrics);
 
         List<Metric> result = metricService.getAllMetric();
 
@@ -42,10 +42,10 @@ class MetricServiceImplTest {
     @DisplayName("Возвращяет количество метрик")
     public void testGetMetricsSize() {
         List<Metric> mockMetrics = new ArrayList<>();
-        mockMetrics.add(new Metric("id", "hotwatr"));
-        mockMetrics.add(new Metric("id2", "coldWater"));
+        mockMetrics.add(new Metric(1, "hotwatr"));
+        mockMetrics.add(new Metric(2, "coldWater"));
 
-        when(mockRepository.allMetrics()).thenReturn(mockMetrics);
+        when(mockRepository.findAllMetrics()).thenReturn(mockMetrics);
 
         int result = metricService.getMetricsSize();
 
@@ -58,6 +58,6 @@ class MetricServiceImplTest {
 
         metricService.addNewMetric("New Metric");
 
-        verify(mockRepository).addMetric(any(Metric.class));
+        verify(mockRepository).save(any(Metric.class));
     }
 }
