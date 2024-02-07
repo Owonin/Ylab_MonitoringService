@@ -15,6 +15,4 @@ public interface MetricValueRepository {
      * @param metrics    Запись метрик
      */
     void saveMetricValue(Connection connection, MetricRecord metrics);
-
-
 }

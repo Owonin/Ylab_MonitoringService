@@ -41,14 +41,16 @@ class JdbcAuditRepositoryTest {
         postgres.stop();
     }
 
-
-
     @Test
     void testSaveAuditToUser() {
         User user = new User();
         user.setUserId(1);
 
-        AuditEvent auditEvent = auditRepository.save("Test Event", user);
+        AuditEvent expectedAuditEvent = new AuditEvent();
+        expectedAuditEvent.setEvent("Event");
+        expectedAuditEvent.setUser(user);
+
+        AuditEvent auditEvent = auditRepository.save(expectedAuditEvent);
 
         assertNotNull(auditEvent);
         assertEquals(1, auditEvent.getId());

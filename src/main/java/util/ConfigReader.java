@@ -53,12 +53,15 @@ public class ConfigReader {
     /**
      * Чтение параметров конфиг-файла
      *
-     * @param property  Параметр конфиг-файла
-     * @return          Значение параметра конфиг-файла
+     * @param property Параметр конфиг-файла
+     * @return Значение параметра конфиг-файла
      */
     public String getProperty(String property) {
         String baseUrl = properties.getProperty(property);
-        if (baseUrl != null) return baseUrl;
-        else throw new RuntimeException(String.format("Property %s has not been found", property));
+        if (baseUrl != null) {
+            return baseUrl;
+        } else {
+            throw new RuntimeException(String.format("Property %s has not been found", property));
+        }
     }
 }

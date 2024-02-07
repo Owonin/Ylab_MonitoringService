@@ -1,6 +1,7 @@
 package service.impl;
 
 import domain.exception.UserNotFoundException;
+import domain.model.AuditEvent;
 import domain.model.User;
 import domain.repository.AuditRepository;
 import domain.repository.UserRepository;
@@ -33,7 +34,7 @@ class AuditServiceImplTest {
     void testAnonymousUserSaveToAuditRepository() {
         String event = "Some event";
         auditService.log(event);
-        verify(auditRepository, times(1)).save(eq(event), isNull());
+        verify(auditRepository, times(1)).save(any(AuditEvent.class));
     }
 
     @Test
@@ -49,7 +50,7 @@ class AuditServiceImplTest {
 
         auditService.log(event, username);
 
-        verify(auditRepository, times(1)).save(eq(event), eq(user));
+        verify(auditRepository, times(1)).save(any(AuditEvent.class));
     }
 
     @Test
@@ -62,6 +63,6 @@ class AuditServiceImplTest {
 
         assertThrows(UserNotFoundException.class, () -> auditService.log(event, username));
 
-        verify(auditRepository, never()).save(anyString(), any(User.class));
+        verify(auditRepository, never()).save(any(AuditEvent.class));
     }
 }

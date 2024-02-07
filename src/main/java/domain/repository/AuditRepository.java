@@ -13,6 +13,6 @@ public interface AuditRepository {
     /**
      * Сохранить данные аудита
      */
-    AuditEvent save(String event, User user);
+    AuditEvent save(AuditEvent auditEvent);
 
 }

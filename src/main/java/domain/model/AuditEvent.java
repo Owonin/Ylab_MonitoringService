@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Setter
 public class AuditEvent {
 
-    private int id;
+    private Integer id;
     private String event;
     private User user;
     private LocalDate eventTime;

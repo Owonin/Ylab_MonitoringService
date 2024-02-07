@@ -1,5 +1,6 @@
 package domain.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -11,9 +12,10 @@ import java.util.Objects;
  */
 @Getter
 @Setter
+@EqualsAndHashCode
 @RequiredArgsConstructor
 public class Metric {
-    private int id;
+    private Integer id;
     private String name;
 
     /**
@@ -29,17 +31,4 @@ public class Metric {
         this.id = id;
         this.name = name;
     }
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Metric metric = (Metric) o;
-        return id == metric.id && name.equals(metric.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name);
-    }
-
 }

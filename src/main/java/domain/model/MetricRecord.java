@@ -1,5 +1,6 @@
 package domain.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,9 +13,10 @@ import java.util.Objects;
  */
 @Getter
 @Setter
+@EqualsAndHashCode
 public class MetricRecord {
 
-    private int id;
+    private Integer id;
     private Map<Metric, Integer> metrics;
     private LocalDate metricDate;
     private User user;
@@ -45,18 +47,5 @@ public class MetricRecord {
         this.metrics = metrics;
         this.metricDate = metricDate;
         this.user = user;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        MetricRecord that = (MetricRecord) o;
-        return id == that.id && metrics.equals(that.metrics) && metricDate.equals(that.metricDate) && user.equals(that.user);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, metrics, metricDate, user);
     }
 }

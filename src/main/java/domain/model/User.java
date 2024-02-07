@@ -1,6 +1,7 @@
 package domain.model;
 
 import auth.UserDetails;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,9 +14,10 @@ import java.util.Set;
  */
 @Getter
 @Setter
+@EqualsAndHashCode
 public class User implements UserDetails {
 
-    private int userId;
+    private Integer userId;
     private String username;
     private String password;
     private Set<Role> roles;
@@ -103,18 +105,5 @@ public class User implements UserDetails {
     @Override
     public String getPassword() {
         return password;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return userId == user.userId && username.equals(user.username) && password.equals(user.password);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(userId, username, password);
     }
 }

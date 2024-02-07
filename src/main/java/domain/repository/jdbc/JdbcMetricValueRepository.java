@@ -14,7 +14,6 @@ public class JdbcMetricValueRepository implements MetricValueRepository {
     public static final String INSERT_INTO_METRIC_VALUES = "INSERT INTO private_schema.metric_values " +
             "(value, metric_record_id, metric_id) VALUES (?, ?, ?)";
 
-
     /**
      * Сохранение значений записей метрик в БД
      *

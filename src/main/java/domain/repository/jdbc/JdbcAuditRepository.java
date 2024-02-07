@@ -1,17 +1,10 @@
 package domain.repository.jdbc;
 
 import domain.model.AuditEvent;
-import domain.model.User;
 import domain.repository.AuditRepository;
 import util.DBConnectionProvider;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.PreparedStatement;
-import java.sql.Connection;
-import java.sql.Types;
-import java.sql.Date;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDate;
 
 /**
@@ -19,7 +12,7 @@ import java.time.LocalDate;
  */
 public class JdbcAuditRepository implements AuditRepository {
 
-    private final String INSERT_USER_SQL = "INSERT INTO private_schema.events (event, user_id, event_time) VALUES (?,?,?)";
+    private final String insertUserSql = "INSERT INTO private_schema.events (event, user_id, event_time) VALUES (?,?,?)";
 
     private final DBConnectionProvider connectionProvider;
 
@@ -35,26 +28,23 @@ public class JdbcAuditRepository implements AuditRepository {
     /**
      * Сохранить данные аудита
      *
-     * @param event Событие
-     * @param user  Пользователь
+     * @param auditEvent Событие
      */
     @Override
-    public AuditEvent save(String event, User user) {
+    public AuditEvent save(AuditEvent auditEvent) {
         try (Connection connection = connectionProvider.getConnection()) {
 
             connection.setAutoCommit(false);
 
-
-            try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_USER_SQL, Statement.RETURN_GENERATED_KEYS)) {
-                preparedStatement.setString(1, event);
-                if (user == null) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(insertUserSql, Statement.RETURN_GENERATED_KEYS)) {
+                preparedStatement.setString(1, auditEvent.getEvent());
+                if (auditEvent.getUser() == null) {
                     preparedStatement.setNull(2, Types.INTEGER);
                 } else {
-                    preparedStatement.setInt(2, user.getUserId());
+                    preparedStatement.setInt(2, auditEvent.getUser().getUserId());
                 }
                 preparedStatement.setDate(3, Date.valueOf(LocalDate.now()));
                 int affectedRows = preparedStatement.executeUpdate();
-                AuditEvent auditEvent = new AuditEvent();
                 if (affectedRows > 0) {
                     try (ResultSet generatedKeys = preparedStatement.getGeneratedKeys()) {
                         if (generatedKeys.next()) {

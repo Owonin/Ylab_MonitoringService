@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.5.xsd"
         logicalFilePath="db/changelog.xml">
-    <changeSet id="001-create-table" author="ylab">
+    <changeSet id="001-create-database-tables" author="ylab">
         <createTable schemaName="private_schema" tableName="users">
             <column name="id" type="SERIAL">
                 <constraints primaryKey="true" nullable="false"/>
@@ -17,6 +17,7 @@
                 <constraints nullable="false" unique="false"/>
             </column>
         </createTable>
+        <createSequence schemaName="private_schema" sequenceName="users_id_seq" incrementBy="1" startValue="1" />
 
         <createTable schemaName="private_schema" tableName="roles">
             <column name="id" type="SERIAL">
@@ -26,6 +27,7 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
+        <createSequence schemaName="private_schema" sequenceName="roles_id_seq" incrementBy="1" startValue="1" />
 
         <createTable schemaName="private_schema" tableName="user_roles">
             <column name="id" type="SERIAL">
@@ -40,6 +42,7 @@
                              references="private_schema.users(id)"/>
             </column>
         </createTable>
+        <createSequence schemaName="private_schema" sequenceName="user_roles_id_seq" incrementBy="1" startValue="1" />
 
         <createTable schemaName="private_schema" tableName="metrics">
             <column name="id" type="SERIAL">
@@ -49,6 +52,7 @@
                 <constraints nullable="false" unique="true"/>
             </column>
         </createTable>
+        <createSequence schemaName="private_schema" sequenceName="metrics_id_seq" incrementBy="1" startValue="1" />
 
         <createTable schemaName="private_schema" tableName="metric_records">
             <column name="id" type="SERIAL">
@@ -62,6 +66,7 @@
                              references="private_schema.users(id)"/>
             </column>
         </createTable>
+        <createSequence schemaName="private_schema" sequenceName="metric_records_id_seq" incrementBy="1" startValue="1" />
 
         <createTable schemaName="private_schema" tableName="metric_values">
             <column name="id" type="SERIAL">
@@ -79,6 +84,7 @@
                              references="private_schema.metrics(id)"/>
             </column>
         </createTable>
+        <createSequence schemaName="private_schema" sequenceName="metric_values_id_seq" incrementBy="1" startValue="1" />
 
         <createTable schemaName="private_schema" tableName="events">
             <column name="id" type="SERIAL">
@@ -94,5 +100,6 @@
                 <constraints nullable="true" foreignKeyName="fk_users_events" references="private_schema.users(id)"/>
             </column>
         </createTable>
+        <createSequence schemaName="private_schema" sequenceName="events_id_seq" incrementBy="1" startValue="1" />
     </changeSet>
 </databaseChangeLog>
