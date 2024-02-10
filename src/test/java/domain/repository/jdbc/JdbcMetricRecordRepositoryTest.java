@@ -79,7 +79,7 @@ class JdbcMetricRecordRepositoryTest {
         Map<Metric, Integer> metrics = Map.of(heatingReading, 100);
         LocalDate localDate = LocalDate.of(2000,12,24);
 
-        MetricRecord expectedMetric = new MetricRecord(metrics, localDate, user);
+        MetricRecord expectedMetric = new MetricRecord(1,metrics, localDate, user);
 
 
         MetricRecord resultRecord = metricRecordRepository.save(user, expectedMetric);
@@ -104,12 +104,12 @@ class JdbcMetricRecordRepositoryTest {
         LocalDate localDate2 = LocalDate.of(2000,10,24);
 
 
-        MetricRecord expectedMetric = metricRecordRepository.save(user,new MetricRecord(metrics, localDate, user));
-        MetricRecord expectedMetric2 = metricRecordRepository.save(user,new MetricRecord(metrics, localDate2, user));
+        MetricRecord expectedMetric = metricRecordRepository.save(user,new MetricRecord(1,metrics, localDate, user));
+        MetricRecord expectedMetric2 = metricRecordRepository.save(user,new MetricRecord(1,metrics, localDate2, user));
 
         List<MetricRecord> resultRecord = metricRecordRepository.findUserMetrics(user);
 
-        assertNotNull(resultRecord);
+        assertNotNull(resultRecord); //todo
         assertTrue(resultRecord.contains(expectedMetric));
         assertTrue(resultRecord.contains(expectedMetric2));
     }
@@ -127,8 +127,8 @@ class JdbcMetricRecordRepositoryTest {
         User user = new User(1, "UserTestName", "psw", Set.of(Role.USER));
         user = userRepository.save(user);
 
-        MetricRecord oldMetricRecord = new MetricRecord(metrics, firstLocalDate, user);
-        MetricRecord newMetricRecord = new MetricRecord(metrics, secondLocalDate, user);
+        MetricRecord oldMetricRecord = new MetricRecord(1,metrics, firstLocalDate, user);
+        MetricRecord newMetricRecord = new MetricRecord(1,metrics, secondLocalDate, user);
 
 
         MetricRecord savedMetricRecord = metricRecordRepository.save(user, newMetricRecord);

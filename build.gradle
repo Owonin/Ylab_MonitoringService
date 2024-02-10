@@ -1,9 +1,16 @@
 plugins {
     id 'java'
+    id 'war'
+    id "io.freefair.aspectj.base" version "8.4"
 }
+
 
 group 'org.example'
 version '1.0-SNAPSHOT'
+
+project.ext {
+    aspectjVersion = '1.9.4'
+}
 
 repositories {
     mavenCentral()
@@ -20,10 +27,22 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.8'
 
     implementation 'org.postgresql:postgresql:42.7.1'
+
     implementation 'org.liquibase:liquibase-core:4.17.2'
 
     testImplementation 'org.testcontainers:postgresql:1.19.4'
     testImplementation 'org.testcontainers:junit-jupiter:1.19.4'
+
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.1'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.16.1'
+
+    implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+
+    providedCompile 'javax.servlet:javax.servlet-api:4.0.1'
+
+    implementation 'org.aspectj:aspectjrt:1.9.2'
+    implementation 'org.aspectj:aspectjweaver:1.9.2'
 }
 
 test {
@@ -33,18 +52,18 @@ test {
 sourceSets {
     main {
         java {
-            srcDirs= ["src/main/java"]
+            srcDirs = ["src/main/java"]
         }
         resources {
-            srcDirs= ["src/main/resources"]
+            srcDirs = ["src/main/resources"]
         }
     }
     test {
         java {
-            srcDirs= ["src/test/java"]
+            srcDirs = ["src/test/java"]
         }
         resources {
-            srcDirs= ["src/test/resources"]
+            srcDirs = ["src/test/resources"]
         }
     }
 }
@@ -55,4 +74,8 @@ jar {
                 'Main-Class': 'MonitoringService'
         )
     }
+}
+
+war {
+    archiveFileName = 'MonitoringService.war'
 }

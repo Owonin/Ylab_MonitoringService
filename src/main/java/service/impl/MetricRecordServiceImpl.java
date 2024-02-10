@@ -84,7 +84,7 @@ public class MetricRecordServiceImpl implements MetricRecordService {
         List<MetricRecord> lastMetrics = metricRecordRepository.findUserMetrics(user);
         int lastMetricsSize = lastMetrics.size();
 
-        MetricRecord newRecord = new MetricRecord(new HashMap<>(metrics), LocalDate.now(), user);
+        MetricRecord newRecord = new MetricRecord(1,new HashMap<>(metrics), LocalDate.now(), user);
 
         Month currentMonth = LocalDate.now().getMonth();
 

@@ -130,7 +130,7 @@ public class JdbcUserRepository implements UserRepository {
      * @return Опциональный объект, содержащий пользователя.
      */
     @Override
-    public Optional<User> findUserById(int id) {
+    public Optional<User> findUserById(int id) { //todo roles adding to user
         try (Connection connection = connectionProvider.getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(FIND_USER_BY_ID_SQL);
             preparedStatement.setInt(1, id);
