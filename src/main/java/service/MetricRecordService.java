@@ -57,5 +57,5 @@ public interface MetricRecordService {
      * @return Запись метрик пользователя за указанный месяц и год.
      * @throws NotFoundException Если запись метрик за указанный месяц и год не найдена или пользователь с указанным именем не найден.
      */
-    MetricRecord getMetricRecordByMonth(int month, int year, String username) throws NotFoundException;
+    MetricRecord getMetricRecordByMonth(String username, int month, int year) throws NotFoundException;
 }

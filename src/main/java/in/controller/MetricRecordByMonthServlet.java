@@ -69,6 +69,7 @@ public class MetricRecordByMonthServlet extends HttpServlet {
         String month = req.getParameter("month");
         String year = req.getParameter("year");
 
+
         try {
             if (month == null && year == null) {
                 getLastMonthMetric(resp, authContext);
@@ -86,9 +87,9 @@ public class MetricRecordByMonthServlet extends HttpServlet {
 
     private void getMetricByDate(HttpServletResponse resp, AuthContext authContext, String month, String year)
             throws NotFoundException, AuthenticationException, IOException {
-        MetricRecord metricRecord = metricRecordService.getMetricRecordByMonth(Integer.parseInt(month),
-                Integer.parseInt(year),
-                authContext.getCurrentUsername());
+        MetricRecord metricRecord = metricRecordService.getMetricRecordByMonth(authContext.getCurrentUsername(),
+                Integer.parseInt(month),
+                Integer.parseInt(year));
         MetricRecordDto metricRecordDto = MetricRecordMapper.INSTANCE.metricRecordToMetricRecordDto(metricRecord);
         byte[] message = objectMapper.writeValueAsBytes(metricRecordDto);
         resp.setStatus(HttpServletResponse.SC_OK);

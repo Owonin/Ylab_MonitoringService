@@ -13,7 +13,6 @@ import java.util.Objects;
 @Getter
 @Setter
 @EqualsAndHashCode
-@RequiredArgsConstructor
 public class Metric {
     private Integer id;
     private String name;
@@ -23,10 +22,6 @@ public class Metric {
      *
      * @param name Наименование метрики.
      */
-    public Metric(String name) {
-        this.name = name;
-    }
-
     public Metric(int id, String name) {
         this.id = id;
         this.name = name;

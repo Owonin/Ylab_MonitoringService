@@ -11,4 +11,8 @@ import java.util.List;
 @NoArgsConstructor
 public class MetricRecordRequestList {
     List<MetricRecordRequest> metrics;
+
+    public boolean isValid() {
+        return metrics != null && metrics.stream().allMatch(MetricRecordRequest::isValid);
+    }
 }

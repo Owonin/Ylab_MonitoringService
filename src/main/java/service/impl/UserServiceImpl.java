@@ -1,6 +1,7 @@
 package service.impl;
 
 
+import aop.annotations.Loggable;
 import auth.AuthContext;
 import domain.exception.NotFoundException;
 import domain.exception.UserNotFoundException;
@@ -18,6 +19,7 @@ import java.util.UUID;
 /**
  * Класс, представляющий реализацию сервиса работы с пользователями.
  */
+@Loggable
 public class UserServiceImpl implements UserService {
 
     private final String USER_IS_ALREADY_PRESENT_ERROR_MESSAGE = "User with this username is already present";

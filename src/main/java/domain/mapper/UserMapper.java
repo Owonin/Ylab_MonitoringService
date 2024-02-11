@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 public interface UserMapper {
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    @Mapping(target = "authorities", source = "roles")
     User userDtoToUser(UserDto userDto);
 
 

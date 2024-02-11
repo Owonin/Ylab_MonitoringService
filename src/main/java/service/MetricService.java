@@ -1,5 +1,6 @@
 package service;
 
+import aop.annotations.Loggable;
 import domain.model.Metric;
 
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.List;
  * Интерфейс, определяющий операции для работы с метриками.
  * Предоставляет методы для добавления новых метрик, получения количества метрик и получения списка всех метрик.
  */
+
 public interface MetricService {
 
     /**
