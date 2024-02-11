@@ -13,6 +13,14 @@ public class LoggableAspect {
     @Pointcut("within(@aop.annotations.Loggable *) && execution(* *(..))")
     public void annotatedByLoggable() {
     }
+
+    /**
+     * Добавляет возможность логирования методов и выводит время работы метода
+     *
+     * @param proceedingJoinPoint JoinPoint
+     * @return
+     * @throws Throwable
+     */
     @Around("annotatedByLoggable()")
     public Object logging(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         Signature methodName = proceedingJoinPoint.getSignature();

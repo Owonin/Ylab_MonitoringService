@@ -20,6 +20,9 @@ public class UserServiceAspect {
 
     private final AuditService auditService;
 
+    /**
+     * Конструктор класса
+     */
     public UserServiceAspect() {
 
         ConfigReader configReader = ConfigReader.getInstance();
@@ -33,6 +36,11 @@ public class UserServiceAspect {
         this.auditService = new AuditServiceImpl(auditRepository,userRepository);
     }
 
+    /**
+     * Логирование и аудит перед get методами сервиса User
+     *
+     * @param joinPoint
+     */
     @Before("Pointcuts.allGetUserMethods()")
     public void beforeGettingAdvice(JoinPoint joinPoint) {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
@@ -47,6 +55,11 @@ public class UserServiceAspect {
         System.out.println(message);
     }
 
+    /**
+     * Логирование и аудит после get методами сервиса User
+     *
+     * @param joinPoint
+     */
     @AfterReturning(value = "Pointcuts.allGetUserMethods()", returning = "result")
     public void afterGettingAdvice(JoinPoint joinPoint, Object result) {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
@@ -61,6 +74,11 @@ public class UserServiceAspect {
         System.out.println(message);
     }
 
+    /**
+     * Логирование и аудит перед регистрированием пользователя
+     *
+     * @param joinPoint
+     */
     @Before("Pointcuts.registrateUser()")
     public void beforeRegistrateUserAdvice(JoinPoint joinPoint) {
         String methodName = joinPoint.getSignature().getName();
@@ -75,6 +93,11 @@ public class UserServiceAspect {
         System.out.println(message);
     }
 
+    /**
+     * Логирование и аудит после регестрации пользователя
+     *
+     * @param joinPoint
+     */
     @AfterReturning("Pointcuts.registrateUser()")
     public void afterRegistrateUserAdvice(JoinPoint joinPoint) {
         String methodName = joinPoint.getSignature().getName();
@@ -89,6 +112,11 @@ public class UserServiceAspect {
         System.out.println(message);
     }
 
+    /**
+     * Логирование и аудит перед входа в аккаунт
+     *
+     * @param joinPoint
+     */
     @Before("Pointcuts.login()")
     public void beforeLoginAdvice(JoinPoint joinPoint) {
         String methodName = joinPoint.getSignature().getName();
@@ -103,6 +131,12 @@ public class UserServiceAspect {
         System.out.println(message);
     }
 
+
+    /**
+     * Логирование и аудит после входа в аккаунт
+     *
+     * @param joinPoint
+     */
     @AfterReturning("Pointcuts.login()")
     public void afterLoginAdvice(JoinPoint joinPoint) {
         String methodName = joinPoint.getSignature().getName();

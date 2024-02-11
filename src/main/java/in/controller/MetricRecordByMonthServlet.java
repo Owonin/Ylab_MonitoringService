@@ -53,6 +53,8 @@ public class MetricRecordByMonthServlet extends HttpServlet {
     }
 
     /**
+     * Получение метрики по месяцу
+     *
      * @param req  an {@link HttpServletRequest} object that
      *             contains the request the client has made
      *             of the servlet
@@ -90,6 +92,17 @@ public class MetricRecordByMonthServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Получение метрики по дате
+     *
+     * @param resp ответ сервлета
+     * @param authContext Контекст авторизации
+     * @param month Месяц
+     * @param year Год
+     * @throws NotFoundException
+     * @throws AuthenticationException
+     * @throws IOException
+     */
     private void getMetricByDate(HttpServletResponse resp, AuthContext authContext, String month, String year)
             throws NotFoundException, AuthenticationException, IOException {
         MetricRecord metricRecord = metricRecordService.getMetricRecordByMonth(authContext.getCurrentUsername(),
@@ -101,6 +114,15 @@ public class MetricRecordByMonthServlet extends HttpServlet {
         resp.getOutputStream().write(message);
     }
 
+    /**
+     * Получение актуальной метрики
+     *
+     * @param resp ответ сервлета
+     * @param authContext Контекст авторизации
+     * @throws NotFoundException
+     * @throws AuthenticationException
+     * @throws IOException
+     */
     private void getLastMonthMetric(HttpServletResponse resp, AuthContext authContext)
             throws NotFoundException, AuthenticationException, IOException {
         MetricRecord metricRecord = metricRecordService.getLastMetricRecord(authContext.getCurrentUsername());

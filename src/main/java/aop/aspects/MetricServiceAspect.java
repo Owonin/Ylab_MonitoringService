@@ -19,6 +19,9 @@ public class MetricServiceAspect {
 
     private final AuditService auditService;
 
+    /**
+     * Конструктор класса
+     */
     public MetricServiceAspect() {
 
         ConfigReader configReader = ConfigReader.getInstance();
@@ -32,6 +35,11 @@ public class MetricServiceAspect {
         this.auditService = new AuditServiceImpl(auditRepository,userRepository);
     }
 
+    /**
+     * Логирование и аудит перед get методами сервиса Metric
+     *
+     * @param joinPoint
+     */
     @Before("Pointcuts.allGetMetricMethods()")
     public void beforeGettingAdvice(JoinPoint joinPoint) {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
@@ -48,6 +56,11 @@ public class MetricServiceAspect {
         System.out.println(message);
     }
 
+    /**
+     * Логирование и аудит после get методами сервиса Metric
+     *
+     * @param joinPoint
+     */
     @AfterReturning(value = "Pointcuts.allGetMetricMethods()", returning = "result")
     public void afterGettingAdvice(JoinPoint joinPoint, Object result) {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
@@ -64,6 +77,11 @@ public class MetricServiceAspect {
         System.out.println(message);
     }
 
+    /**
+     * Логирование и аудит перед add методами сервиса Metric
+     *
+     * @param joinPoint
+     */
     @Before("Pointcuts.allAddMetricMethods()")
     public void beforeAddingAdvice(JoinPoint joinPoint) {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
@@ -79,6 +97,11 @@ public class MetricServiceAspect {
         System.out.println(message);
     }
 
+    /**
+     * Логирование и аудит После add методами сервиса Metric
+     *
+     * @param joinPoint
+     */
     @AfterReturning("Pointcuts.allAddMetricMethods()")
     public void afterAddingAdvice(JoinPoint joinPoint) {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();

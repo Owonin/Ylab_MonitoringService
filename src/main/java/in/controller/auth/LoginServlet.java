@@ -37,6 +37,9 @@ public class LoginServlet extends HttpServlet {
     }
 
     /**
+     *
+     * Вход в аккаунт
+     *
      * @param req  an {@link HttpServletRequest} object that
      *             contains the request the client has made
      *             of the servlet

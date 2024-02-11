@@ -20,8 +20,10 @@ public class MetricRecordServiceAspect {
 
     private final AuditService auditService;
 
+    /**
+     * Конструктор класса
+     */
     public MetricRecordServiceAspect() {
-
         ConfigReader configReader = ConfigReader.getInstance();
         DBConnectionProvider connectionProvider = new DBConnectionProvider(
                 configReader.getProperty("URL"),
@@ -33,6 +35,11 @@ public class MetricRecordServiceAspect {
         this.auditService = new AuditServiceImpl(auditRepository,userRepository);
     }
 
+    /**
+     * Логирование и аудит перед get методами сервиса MetricRecord
+     *
+     * @param joinPoint
+     */
     @Before("Pointcuts.allGetMetricRecordMethods()")
     public void beforeGettingAdvice(JoinPoint joinPoint) {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
@@ -63,6 +70,11 @@ public class MetricRecordServiceAspect {
         System.out.println(message);
     }
 
+    /**
+     * Логирование и аудит после get методами сервиса MetricRecord
+     *
+     * @param joinPoint
+     */
     @AfterReturning(value = "Pointcuts.allGetMetricRecordMethods()", returning = "result")
     public void afterGettingAdvice(JoinPoint joinPoint, Object result) {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
@@ -93,6 +105,11 @@ public class MetricRecordServiceAspect {
         System.out.println(message);
     }
 
+    /**
+     * Логирование и аудит перед add методами сервиса MetricRecord
+     *
+     * @param joinPoint
+     */
     @Before("Pointcuts.allAddMetricRecordMethods()")
     public void beforeAddingAdvice(JoinPoint joinPoint) {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
@@ -113,6 +130,11 @@ public class MetricRecordServiceAspect {
         System.out.println(message);
     }
 
+    /**
+     * Логирование и аудит после add методами сервиса MetricRecord
+     *
+     * @param joinPoint
+     */
     @AfterReturning("Pointcuts.allAddMetricRecordMethods()")
     public void afterAddingAdvice(JoinPoint joinPoint) {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();

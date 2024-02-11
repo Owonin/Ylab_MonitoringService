@@ -58,6 +58,8 @@ public class MetricRecordServlet extends HttpServlet {
     }
 
     /**
+     * Получение метрик пользователя
+     *
      * @param req  an {@link HttpServletRequest} object that
      *             contains the request the client has made
      *             of the servlet
@@ -92,6 +94,8 @@ public class MetricRecordServlet extends HttpServlet {
     }
 
     /**
+     * Добавление метрики пользователя
+     *
      * @param req  an {@link HttpServletRequest} object that
      *             contains the request the client has made
      *             of the servlet
