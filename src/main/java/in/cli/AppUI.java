@@ -328,7 +328,7 @@ public class AppUI {
             MetricRecord record;
 
             auditService.log(String.format("Пользователь %s запрашивает просмотр метрики за %d.%d", username, month, year), username);
-            record = metricRecordService.getMetricRecordByMonth(month, year, username);
+            record = metricRecordService.getMetricRecordByMonth(username, month, year);
 
             showRecord(List.of(record));
 

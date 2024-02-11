@@ -122,7 +122,7 @@ class MetricRecordServiceImplTest {
         when(userRepository.findUserByUsername("username")).thenReturn(Optional.of(user));
         when(metricRecordRepository.findUserMetrics(user)).thenReturn(Collections.singletonList(metricRecord));
 
-        MetricRecord actualMetricRecord = metricRecordService.getMetricRecordByMonth(12, 1999, "username");
+        MetricRecord actualMetricRecord = metricRecordService.getMetricRecordByMonth("username", 12, 1999);
         assertEquals(metricRecord, actualMetricRecord);
     }
 
@@ -139,6 +139,6 @@ class MetricRecordServiceImplTest {
         when(metricRecordRepository.findUserMetrics(user)).thenReturn(Collections.singletonList(metricRecord));
 
 
-        assertThrows(NotFoundException.class, () -> metricRecordService.getMetricRecordByMonth(12, 1999, "username"));
+        assertThrows(NotFoundException.class, () -> metricRecordService.getMetricRecordByMonth("username",12, 1999));
     }
 }

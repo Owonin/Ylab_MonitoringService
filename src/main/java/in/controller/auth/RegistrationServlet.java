@@ -56,8 +56,14 @@ public class RegistrationServlet extends HttpServlet {
         UserCredentialsRequest userCredentials = objectMapper.readValue(req.getInputStream(), UserCredentialsRequest.class);
 
         try {
-            userService.registrateUser(userCredentials.getUsername(), userCredentials.getPassword(), Set.of(Role.USER));
-            resp.setStatus(HttpServletResponse.SC_CREATED);
+            if (userCredentials.isValid()) {
+                userService.registrateUser(userCredentials.getUsername(), userCredentials.getPassword(), Set.of(Role.USER));
+                resp.setStatus(HttpServletResponse.SC_CREATED);
+            }else {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                byte[] errorMessage = objectMapper.writeValueAsBytes("Логин и пароль должны состоять от 6 до 225 символов");
+                resp.getOutputStream().write(errorMessage);
+            }
         } catch (AuthenticationException e) {
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             byte[] errorMessage = objectMapper.writeValueAsBytes(e.getMessage());

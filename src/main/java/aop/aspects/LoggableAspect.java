@@ -10,11 +10,9 @@ import java.time.LocalDateTime;
 
 @Aspect
 public class LoggableAspect {
-
     @Pointcut("within(@aop.annotations.Loggable *) && execution(* *(..))")
     public void annotatedByLoggable() {
     }
-
     @Around("annotatedByLoggable()")
     public Object logging(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         Signature methodName = proceedingJoinPoint.getSignature();

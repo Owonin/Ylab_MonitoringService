@@ -25,9 +25,15 @@ import java.io.IOException;
 public class LoginServlet extends HttpServlet {
 
     private final ObjectMapper objectMapper;
+    private UserService userService;
 
     public LoginServlet() {
         objectMapper = new ObjectMapper();
+    }
+
+    public LoginServlet(ObjectMapper objectMapper, UserService userService) {
+        this.objectMapper = objectMapper;
+        this.userService = userService;
     }
 
     /**
@@ -54,17 +60,23 @@ public class LoginServlet extends HttpServlet {
                 configReader.getProperty("USER"),
                 configReader.getProperty("PASSWORD"));
         UserRepository userRepository = new JdbcUserRepository(dbConnectionProvider);
-        UserService userService = new UserServiceImpl(userRepository, authContext);
+        userService = new UserServiceImpl(userRepository, authContext);
 
         try {
-            userService.login(userCredentials.getUsername(), userCredentials.getPassword());
-            resp.setStatus(HttpServletResponse.SC_OK);
+            if (userCredentials.isValid()) {
+                userService.login(userCredentials.getUsername(), userCredentials.getPassword());
+                resp.setStatus(HttpServletResponse.SC_OK);
+            }else {
+                resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                byte[] errorMessage = objectMapper.writeValueAsBytes("Логин и пароль должны состоять от 6 до 225 символов");
+                resp.getOutputStream().write(errorMessage);
+            }
         } catch (NotFoundException e) {
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             byte[] errorMessage = objectMapper.writeValueAsBytes(e.getMessage());
             resp.getOutputStream().write(errorMessage);
         } catch (AuthenticationException e) {
-            resp.setStatus(418); //todo
+            resp.setStatus(418);
             byte[] errorMessage = objectMapper.writeValueAsBytes(e.getMessage());
             resp.getOutputStream().write(errorMessage);
         }

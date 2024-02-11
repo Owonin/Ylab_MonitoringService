@@ -47,6 +47,11 @@ public class MetricRecordByMonthServlet extends HttpServlet {
         metricRecordService = new MetricRecordServiceImpl(metricRecordRepository, userRepository);
     }
 
+    public MetricRecordByMonthServlet(ObjectMapper objectMapper, MetricRecordService metricRecordService) {
+        this.objectMapper = objectMapper;
+        this.metricRecordService = metricRecordService;
+    }
+
     /**
      * @param req  an {@link HttpServletRequest} object that
      *             contains the request the client has made

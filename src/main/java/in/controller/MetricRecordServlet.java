@@ -85,9 +85,9 @@ public class MetricRecordServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.getOutputStream().write(message);
         } catch (NotFoundException e) {
-            ServletErrorHandler.handleErrorMessage(resp, e.getMessage(), HttpServletResponse.SC_NOT_FOUND,objectMapper);
+            ServletErrorHandler.handleErrorMessage(resp, e.getMessage(), HttpServletResponse.SC_NOT_FOUND, objectMapper);
         } catch (AuthenticationException e) {
-            ServletErrorHandler.handleErrorMessage(resp, e.getMessage(), HttpServletResponse.SC_FORBIDDEN,objectMapper);
+            ServletErrorHandler.handleErrorMessage(resp, e.getMessage(), HttpServletResponse.SC_FORBIDDEN, objectMapper);
         }
     }
 
@@ -113,23 +113,31 @@ public class MetricRecordServlet extends HttpServlet {
         MetricRecordRequestList recordRequestList = objectMapper.readValue(req.getInputStream(), MetricRecordRequestList.class);
 
         Map<Metric, Integer> metricMap = new HashMap<>();
-        for (MetricRecordRequest recordRequest : recordRequestList.getMetrics()) {
-            metricMap.put(recordRequest.getMetric(), recordRequest.getValue());
+
+        if (recordRequestList.isValid()) {
+
+            for (MetricRecordRequest recordRequest : recordRequestList.getMetrics()) {
+                metricMap.put(recordRequest.getMetric(), recordRequest.getValue());
+            }
+        } else {
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            byte[] message = objectMapper.writeValueAsBytes("Проверте правильност введенных данных");
+            resp.getOutputStream().write(message);
         }
 
         try {
-            if(metricRecordService.addNewMonthlyMetric(authContext.getCurrentUsername(), metricMap)){
+            if (metricRecordService.addNewMonthlyMetric(authContext.getCurrentUsername(), metricMap)) {
                 resp.setStatus(HttpServletResponse.SC_CREATED);
-            }else {
+            } else {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 byte[] message = objectMapper.writeValueAsBytes("Данные за этот месяц уже сохранены");
                 resp.getOutputStream().write(message);
             }
 
         } catch (NotFoundException e) {
-            ServletErrorHandler.handleErrorMessage(resp, e.getMessage(), HttpServletResponse.SC_NOT_FOUND,objectMapper);
+            ServletErrorHandler.handleErrorMessage(resp, e.getMessage(), HttpServletResponse.SC_NOT_FOUND, objectMapper);
         } catch (AuthenticationException e) {
-            ServletErrorHandler.handleErrorMessage(resp, e.getMessage(), HttpServletResponse.SC_FORBIDDEN,objectMapper);
+            ServletErrorHandler.handleErrorMessage(resp, e.getMessage(), HttpServletResponse.SC_FORBIDDEN, objectMapper);
         }
     }
 }
