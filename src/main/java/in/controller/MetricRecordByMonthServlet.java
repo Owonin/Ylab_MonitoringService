@@ -36,21 +36,21 @@ public class MetricRecordByMonthServlet extends HttpServlet {
      * @param resp an {@link HttpServletResponse} object that
      *             contains the response the servlet sends
      *             to the client
-     * @throws ServletException
      * @throws IOException
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ServletContext servletContext = getServletContext();
-        metricRecordService = (MetricRecordService) servletContext.getAttribute("MetricRecordService");
+        metricRecordService = (MetricRecordService) servletContext.getAttribute("metricRecordService");
         objectMapper = (ObjectMapper) servletContext.getAttribute("objectMapper");
+        AuthContextFactory authContextFactory = (AuthContextFactory) servletContext.getAttribute("authContextFactory");
 
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
 
         HttpSession session = req.getSession();
 
-        AuthContext authContext = AuthContextFactory.getAuthContextForUser(session.getId());
+        AuthContext authContext = authContextFactory.getAuthContextForUser(session.getId());
 
         String month = req.getParameter("month");
         String year = req.getParameter("year");

@@ -2,10 +2,8 @@ package domain.model;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.Objects;
 
 /**
  * Класс, представляющий метрику.
@@ -13,6 +11,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @EqualsAndHashCode
+@NoArgsConstructor
 public class Metric {
     private Integer id;
     private String name;

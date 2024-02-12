@@ -9,7 +9,6 @@ import service.UserService;
 
 import javax.naming.AuthenticationException;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -36,10 +35,11 @@ public class LoginServlet extends HttpServlet {
         ServletContext servletContext = getServletContext();
         UserService userService = (UserService) servletContext.getAttribute("userService");
         ObjectMapper objectMapper = (ObjectMapper) servletContext.getAttribute("objectMapper");
+        AuthContextFactory authContextFactory = (AuthContextFactory) servletContext.getAttribute("authContextFactory");
 
         HttpSession session = req.getSession();
 
-        AuthContext authContext = AuthContextFactory.getAuthContextForUser(session.getId());
+        AuthContext authContext = authContextFactory.getAuthContextForUser(session.getId());
 
         UserCredentialsRequest userCredentials = objectMapper.readValue(req.getInputStream(), UserCredentialsRequest.class);
 

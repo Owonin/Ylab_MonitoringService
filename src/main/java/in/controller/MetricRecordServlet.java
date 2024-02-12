@@ -42,21 +42,21 @@ public class MetricRecordServlet extends HttpServlet {
      * @param resp an {@link HttpServletResponse} object that
      *             contains the response the servlet sends
      *             to the client
-     * @throws ServletException
      * @throws IOException
      */
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         ServletContext servletContext = getServletContext();
-        metricRecordService = (MetricRecordService) servletContext.getAttribute("MetricRecordService");
+        metricRecordService = (MetricRecordService) servletContext.getAttribute("metricRecordService");
         objectMapper = (ObjectMapper) servletContext.getAttribute("objectMapper");
+        AuthContextFactory authContextFactory = (AuthContextFactory) servletContext.getAttribute("authContextFactory");
 
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
 
         HttpSession session = req.getSession();
 
-        AuthContext authContext = AuthContextFactory.getAuthContextForUser(session.getId());
+        AuthContext authContext = authContextFactory.getAuthContextForUser(session.getId());
 
         try {
             List<MetricRecord> userMetrics = metricRecordService.getUserMetrics(authContext.getCurrentUsername());
@@ -82,22 +82,22 @@ public class MetricRecordServlet extends HttpServlet {
      * @param resp an {@link HttpServletResponse} object that
      *             contains the response the servlet sends
      *             to the client
-     * @throws ServletException
      * @throws IOException
      */
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         ServletContext servletContext = getServletContext();
-        metricRecordService = (MetricRecordService) servletContext.getAttribute("MetricRecordService");
+        metricRecordService = (MetricRecordService) servletContext.getAttribute("metricRecordService");
         objectMapper = (ObjectMapper) servletContext.getAttribute("objectMapper");
+        AuthContextFactory authContextFactory = (AuthContextFactory) servletContext.getAttribute("authContextFactory");
 
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
 
         HttpSession session = req.getSession();
 
-        AuthContext authContext = AuthContextFactory.getAuthContextForUser(session.getId());
+        AuthContext authContext = authContextFactory.getAuthContextForUser(session.getId());
 
         MetricRecordRequestList recordRequestList = objectMapper.readValue(req.getInputStream(), MetricRecordRequestList.class);
 
@@ -109,7 +109,7 @@ public class MetricRecordServlet extends HttpServlet {
             }
         } else {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            byte[] message = objectMapper.writeValueAsBytes("Проверте правильност введенных данных");
+            byte[] message = objectMapper.writeValueAsBytes("Проверте правильность введенных данных");
             resp.getOutputStream().write(message);
         }
 

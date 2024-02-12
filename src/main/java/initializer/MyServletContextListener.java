@@ -1,5 +1,6 @@
 package initializer;
 
+import auth.AuthContextFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import domain.repository.AuditRepository;
@@ -63,9 +64,13 @@ public class MyServletContextListener implements ServletContextListener {
 
         MigrationExecutor.execute(connectionProvider, "db.changelog/changelog.xml", defaultLiquebaseSchema);
 
+        AuthContextFactory authContextFactory = new AuthContextFactory();
+
         ServletContext servletContext = sce.getServletContext();
 
         servletContext.setAttribute("objectMapper", objectMapper);
+
+        servletContext.setAttribute("authContextFactory", authContextFactory);
 
         servletContext.setAttribute("userService", userService);
         servletContext.setAttribute("meterRecordService", meterRecordService);

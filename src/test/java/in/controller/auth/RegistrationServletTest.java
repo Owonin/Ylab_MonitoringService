@@ -1,7 +1,5 @@
 package in.controller.auth;
 
-import auth.AuthContext;
-import auth.AuthContextFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import in.request.UserCredentialsRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +17,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -27,15 +24,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class LoginServletTest {
+class RegistrationServletTest {
 
     @Mock
     private ServletContext servletContext;
     @Mock
     private ServletConfig servletConfig;
-
-    @Mock
-    private HttpSession session;
 
     @Mock
     private HttpServletRequest request;
@@ -44,52 +38,43 @@ class LoginServletTest {
     private HttpServletResponse response;
 
     @Mock
-    private AuthContextFactory authContextFactory;
-
-    @Mock
-    private AuthContext authContext;
-
-    @Mock
     private UserService userService;
 
     ObjectMapper objectMapper = new ObjectMapper();
 
     @InjectMocks
-    private LoginServlet loginServlet;
+    private RegistrationServlet registrationServlet;
 
     @BeforeEach
     public void setUp() throws ServletException {
-        when(request.getSession()).thenReturn(session);
         when(servletContext.getAttribute("userService")).thenReturn(userService);
         when(servletContext.getAttribute("objectMapper")).thenReturn(objectMapper);
-        when(servletContext.getAttribute("authContextFactory")).thenReturn(authContextFactory);
-        loginServlet.init(servletConfig);
-        when(loginServlet.getServletContext()).thenReturn(servletContext);
+        registrationServlet.init(servletConfig);
+        when(registrationServlet.getServletContext()).thenReturn(servletContext);
 
     }
 
     @Test
-    public void testValidLogin() throws Exception {
+    public void testValidRegistration() throws Exception {
         UserCredentialsRequest userCredentials = new UserCredentialsRequest("validUsername", "validPassword");
+
         when(request.getInputStream()).thenReturn(new MockServletInputStream(objectMapper.writeValueAsBytes(userCredentials)));
 
-        when(authContextFactory.getAuthContextForUser(any())).thenReturn(authContext);
+        registrationServlet.doPost(request, response);
 
-        loginServlet.doPost(request, response);
-
-        verify(userService).login(eq("validUsername"), eq("validPassword"), any());
-        verify(response).setStatus(HttpServletResponse.SC_OK);
+        verify(userService).registrateUser(eq("validUsername"), eq("validPassword"), any());
+        verify(response).setStatus(HttpServletResponse.SC_CREATED);
     }
 
     @Test
-    public void testInvalidLogin() throws Exception {
+    public void testInvalidRegistration() throws Exception {
         UserCredentialsRequest userCredentials = new UserCredentialsRequest("invalid", "short");
+
         when(request.getInputStream()).thenReturn(new MockServletInputStream(objectMapper.writeValueAsBytes(userCredentials)));
 
         when(response.getOutputStream()).thenReturn(new MockServletOutputStream());
-        when(authContextFactory.getAuthContextForUser(any())).thenReturn(authContext);
 
-        loginServlet.doPost(request, response);
+        registrationServlet.doPost(request, response);
 
         verify(response).setStatus(HttpServletResponse.SC_BAD_REQUEST);
     }
