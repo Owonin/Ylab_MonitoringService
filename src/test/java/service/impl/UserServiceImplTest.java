@@ -37,9 +37,10 @@ class UserServiceImplTest {
         String username = "testUser";
         String password = "testPassword";
         Set<Role> roles = Collections.singleton(Role.USER);
+        User user = new User(1, username,password, roles);
 
         when(mockUserRepository.findUserByUsername(username)).thenReturn(Optional.empty());
-        doNothing().when(mockUserRepository).save(any(User.class));
+        when(mockUserRepository.save(any())).thenReturn(user);
 
         assertDoesNotThrow(() -> userService.registrateUser(username, password, roles));
 
@@ -56,7 +57,7 @@ class UserServiceImplTest {
 
         when(mockUserRepository.findUserByUsername(username)).thenReturn(Optional.of(new User(1, username)));
 
-        AuthenticationException exception = assertThrows(AuthenticationException.class,
+        assertThrows(AuthenticationException.class,
                 () -> userService.registrateUser(username, password, roles));
 
         verify(mockUserRepository).findUserByUsername(username);
@@ -72,7 +73,7 @@ class UserServiceImplTest {
 
         when(mockUserRepository.findUserByUsername(username)).thenReturn(Optional.of(user));
 
-        assertDoesNotThrow(() -> userService.login(username, password));
+        assertDoesNotThrow(() -> userService.login(username, password, mockAuthContext));
 
         verify(mockUserRepository).findUserByUsername(username);
         verify(mockAuthContext).authenticateUser(user);
@@ -86,8 +87,8 @@ class UserServiceImplTest {
 
         when(mockUserRepository.findUserByUsername(username)).thenReturn(Optional.empty());
 
-        NotFoundException exception = assertThrows(NotFoundException.class,
-                () -> userService.login(username, password));
+        assertThrows(NotFoundException.class,
+                () -> userService.login(username, password, mockAuthContext));
 
         verify(mockUserRepository).findUserByUsername(username);
     }

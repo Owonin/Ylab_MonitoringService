@@ -155,7 +155,7 @@ public class AppUI {
         String password = scanner.nextLine().trim();
 
         try {
-            userService.login(username, password);
+            userService.login(username, password, context);
             String currentUsername = context.getCurrentUsername();
             System.out.println("Авторизация успешна. Добро пожаловать, " + currentUsername + "!");
             auditService.log(String.format("Пользователь %s успешно авторизовался", currentUsername), currentUsername);

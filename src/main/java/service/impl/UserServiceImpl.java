@@ -12,9 +12,7 @@ import service.UserService;
 
 import javax.naming.AuthenticationException;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * Класс, представляющий реализацию сервиса работы с пользователями.
@@ -25,17 +23,14 @@ public class UserServiceImpl implements UserService {
     private final String USER_IS_ALREADY_PRESENT_ERROR_MESSAGE = "User with this username is already present";
 
     private final UserRepository userRepository;
-    private final AuthContext authContext;
 
     /**
      * Конструктор класса
      *
      * @param userRepository Репозиторий пользоветеля.
-     * @param authContext    Контекст авторизации.
      */
-    public UserServiceImpl(UserRepository userRepository, AuthContext authContext) {
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.authContext = authContext;
     }
 
     /**
@@ -70,7 +65,7 @@ public class UserServiceImpl implements UserService {
      * @throws AuthenticationException Если не удалось выполнить вход в систему.
      */
     @Override
-    public void login(String username, String password) throws NotFoundException, AuthenticationException {
+    public void login(String username, String password, AuthContext authContext) throws NotFoundException, AuthenticationException {
         User user = userRepository.findUserByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
         if (password.equals(user.getPassword())) {

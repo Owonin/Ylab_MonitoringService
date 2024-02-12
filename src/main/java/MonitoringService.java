@@ -48,7 +48,7 @@ public class MonitoringService {
         AuditRepository auditRepository = new JdbcAuditRepository(connectionProvider);
 
         // Создание сервисов для работы с пользователями, записями о показаниях и метриками
-        UserService userService = new UserServiceImpl(userRepository, authContext);
+        UserService userService = new UserServiceImpl(userRepository);
         MetricRecordService meterRecordService = new MetricRecordServiceImpl(metricRecordRepository, userRepository);
         MetricService metricService = new MetricServiceImpl(metricRepository);
         AuditService auditService = new AuditServiceImpl(auditRepository, userRepository);

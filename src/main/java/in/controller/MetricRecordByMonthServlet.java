@@ -3,22 +3,15 @@ package in.controller;
 import auth.AuthContext;
 import auth.AuthContextFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import domain.exception.NotFoundException;
 import domain.mapper.MetricRecordMapper;
 import domain.model.MetricRecord;
-import domain.repository.MetricRecordRepository;
-import domain.repository.UserRepository;
-import domain.repository.jdbc.JdbcMetricRecordRepository;
-import domain.repository.jdbc.JdbcUserRepository;
 import out.dto.MetricRecordDto;
 import service.MetricRecordService;
-import service.impl.MetricRecordServiceImpl;
-import util.ConfigReader;
-import util.DBConnectionProvider;
 import util.ServletErrorHandler;
 
 import javax.naming.AuthenticationException;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -30,27 +23,9 @@ import java.io.IOException;
 @WebServlet("/metric_by_month")
 public class MetricRecordByMonthServlet extends HttpServlet {
 
-    private final ObjectMapper objectMapper;
-    private final MetricRecordService metricRecordService;
+    private ObjectMapper objectMapper;
+    private MetricRecordService metricRecordService;
 
-    public MetricRecordByMonthServlet() {
-        this.objectMapper = new ObjectMapper();
-        this.objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-
-        ConfigReader configReader = ConfigReader.getInstance();
-        DBConnectionProvider dbConnectionProvider = new DBConnectionProvider(
-                configReader.getProperty("URL"),
-                configReader.getProperty("USER"),
-                configReader.getProperty("PASSWORD"));
-        MetricRecordRepository metricRecordRepository = new JdbcMetricRecordRepository(dbConnectionProvider);
-        UserRepository userRepository = new JdbcUserRepository(dbConnectionProvider);
-        metricRecordService = new MetricRecordServiceImpl(metricRecordRepository, userRepository);
-    }
-
-    public MetricRecordByMonthServlet(ObjectMapper objectMapper, MetricRecordService metricRecordService) {
-        this.objectMapper = objectMapper;
-        this.metricRecordService = metricRecordService;
-    }
 
     /**
      * Получение метрики по месяцу
@@ -66,6 +41,10 @@ public class MetricRecordByMonthServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        ServletContext servletContext = getServletContext();
+        metricRecordService = (MetricRecordService) servletContext.getAttribute("MetricRecordService");
+        objectMapper = (ObjectMapper) servletContext.getAttribute("objectMapper");
+
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
 
@@ -86,19 +65,19 @@ public class MetricRecordByMonthServlet extends HttpServlet {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             }
         } catch (AuthenticationException e) {
-            ServletErrorHandler.handleErrorMessage(resp, e.getMessage(), HttpServletResponse.SC_FORBIDDEN,objectMapper);
+            ServletErrorHandler.handleErrorMessage(resp, e.getMessage(), HttpServletResponse.SC_FORBIDDEN, objectMapper);
         } catch (NotFoundException e) {
-            ServletErrorHandler.handleErrorMessage(resp, e.getMessage(), HttpServletResponse.SC_NOT_FOUND,objectMapper);
+            ServletErrorHandler.handleErrorMessage(resp, e.getMessage(), HttpServletResponse.SC_NOT_FOUND, objectMapper);
         }
     }
 
     /**
      * Получение метрики по дате
      *
-     * @param resp ответ сервлета
+     * @param resp        ответ сервлета
      * @param authContext Контекст авторизации
-     * @param month Месяц
-     * @param year Год
+     * @param month       Месяц
+     * @param year        Год
      * @throws NotFoundException
      * @throws AuthenticationException
      * @throws IOException
@@ -117,7 +96,7 @@ public class MetricRecordByMonthServlet extends HttpServlet {
     /**
      * Получение актуальной метрики
      *
-     * @param resp ответ сервлета
+     * @param resp        ответ сервлета
      * @param authContext Контекст авторизации
      * @throws NotFoundException
      * @throws AuthenticationException

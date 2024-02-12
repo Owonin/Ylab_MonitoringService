@@ -2,29 +2,19 @@ package in.controller;
 
 import auth.AuthContext;
 import auth.AuthContextFactory;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import domain.exception.NotFoundException;
-import domain.mapper.MetricMapper;
 import domain.mapper.MetricRecordMapper;
 import domain.model.Metric;
 import domain.model.MetricRecord;
-import domain.repository.MetricRecordRepository;
-import domain.repository.UserRepository;
-import domain.repository.jdbc.JdbcMetricRecordRepository;
-import domain.repository.jdbc.JdbcUserRepository;
 import in.request.MetricRecordRequest;
 import in.request.MetricRecordRequestList;
-import out.dto.MetricDto;
 import out.dto.MetricRecordDto;
 import service.MetricRecordService;
-import service.impl.MetricRecordServiceImpl;
-import util.ConfigReader;
-import util.DBConnectionProvider;
 import util.ServletErrorHandler;
 
 import javax.naming.AuthenticationException;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -40,22 +30,8 @@ import java.util.stream.Collectors;
 @WebServlet("/metric_record")
 public class MetricRecordServlet extends HttpServlet {
 
-    private final ObjectMapper objectMapper;
-    private final MetricRecordService metricRecordService;
-
-    public MetricRecordServlet() {
-        this.objectMapper = new ObjectMapper();
-        this.objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-
-        ConfigReader configReader = ConfigReader.getInstance();
-        DBConnectionProvider dbConnectionProvider = new DBConnectionProvider(
-                configReader.getProperty("URL"),
-                configReader.getProperty("USER"),
-                configReader.getProperty("PASSWORD"));
-        MetricRecordRepository metricRecordRepository = new JdbcMetricRecordRepository(dbConnectionProvider);
-        UserRepository userRepository = new JdbcUserRepository(dbConnectionProvider);
-        metricRecordService = new MetricRecordServiceImpl(metricRecordRepository, userRepository);
-    }
+    private ObjectMapper objectMapper;
+    private MetricRecordService metricRecordService;
 
     /**
      * Получение метрик пользователя
@@ -71,6 +47,10 @@ public class MetricRecordServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        ServletContext servletContext = getServletContext();
+        metricRecordService = (MetricRecordService) servletContext.getAttribute("MetricRecordService");
+        objectMapper = (ObjectMapper) servletContext.getAttribute("objectMapper");
+
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
 
@@ -107,6 +87,11 @@ public class MetricRecordServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        ServletContext servletContext = getServletContext();
+        metricRecordService = (MetricRecordService) servletContext.getAttribute("MetricRecordService");
+        objectMapper = (ObjectMapper) servletContext.getAttribute("objectMapper");
+
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
 
@@ -119,7 +104,6 @@ public class MetricRecordServlet extends HttpServlet {
         Map<Metric, Integer> metricMap = new HashMap<>();
 
         if (recordRequestList.isValid()) {
-
             for (MetricRecordRequest recordRequest : recordRequestList.getMetrics()) {
                 metricMap.put(recordRequest.getMetric(), recordRequest.getValue());
             }
