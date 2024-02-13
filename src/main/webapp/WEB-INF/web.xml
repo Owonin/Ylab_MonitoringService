@@ -8,12 +8,4 @@
     <listener>
         <listener-class>initializer.MyServletContextListener</listener-class>
     </listener>
-    <servlet>
-        <servlet-name>MyServlet</servlet-name>
-        <servlet-class>in.HealthServlet</servlet-class>
-    </servlet>
-    <servlet-mappding>
-        <servlet-name>MyServlet</servlet-name>
-        <url-pattern>/h</url-pattern>
-    </servlet-mappding>
 </web-app>
