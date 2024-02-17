@@ -5,17 +5,16 @@ import domain.model.AuditEvent;
 import domain.model.User;
 import domain.repository.AuditRepository;
 import domain.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import service.AuditService;
 
+@Service
+@RequiredArgsConstructor
 public class AuditServiceImpl implements AuditService {
 
     private final AuditRepository auditRepository;
     private final UserRepository userRepository;
-
-    public AuditServiceImpl(AuditRepository auditRepository, UserRepository userRepository) {
-        this.auditRepository = auditRepository;
-        this.userRepository = userRepository;
-    }
 
     /**
      * Сохраение данных совершенных действий анонимного пользователя

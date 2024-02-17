@@ -4,6 +4,7 @@ import auth.AuthContext;
 import domain.exception.NotFoundException;
 import domain.model.Role;
 import domain.model.User;
+import org.springframework.stereotype.Service;
 
 import javax.naming.AuthenticationException;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.Set;
  * Интерфейс, определяющий операции для работы с пользователями.
  * Предоставляет методы для регистрации нового пользователя и входа в систему.
  */
+@Service
 public interface UserService {
 
     /**

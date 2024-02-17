@@ -1,28 +1,24 @@
 package util;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 
 /**
  * Класс хранящий данные о подключении к БД
  */
+@Component
+@RequiredArgsConstructor
 public class DBConnectionProvider {
+    @Value("url")
     private final String url;
+    @Value("username")
     private final String username;
+    @Value("password")
     private final String password;
-
-    /**
-     * Конструктор класса
-     *
-     * @param url       URL строка для подключения к БД
-     * @param username  Имя пользователя БД
-     * @param password  Пароль пользователя БД
-     */
-    public DBConnectionProvider(String url, String username, String password) {
-        this.url = url;
-        this.username = username;
-        this.password = password;
-    }
 
     /**
      * Получение соединения с БД

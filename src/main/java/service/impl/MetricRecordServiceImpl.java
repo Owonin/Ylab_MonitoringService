@@ -9,6 +9,8 @@ import domain.model.MetricRecord;
 import domain.model.User;
 import domain.repository.MetricRecordRepository;
 import domain.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import service.MetricRecordService;
 
 import java.time.LocalDate;
@@ -20,23 +22,13 @@ import java.util.Map;
 /**
  * Класс, представляющий реализацию сервиса работы с записями о метриках.
  */
+@Service
 @Loggable
+@RequiredArgsConstructor
 public class MetricRecordServiceImpl implements MetricRecordService {
 
     private final MetricRecordRepository metricRecordRepository;
     private final UserRepository userRepository;
-
-    /**
-     * Конструктор класса
-     *
-     * @param metricRecordRepository Репозиторий записей метрик.
-     * @param userRepository         Репозиторий пользователей.
-     */
-    public MetricRecordServiceImpl(MetricRecordRepository metricRecordRepository, UserRepository userRepository) {
-        this.metricRecordRepository = metricRecordRepository;
-        this.userRepository = userRepository;
-
-    }
 
     /**
      * Возвращает список записей метрик для указанного пользователя.

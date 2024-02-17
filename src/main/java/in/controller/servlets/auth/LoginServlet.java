@@ -1,5 +1,6 @@
-package in.controller.auth;
+package in.controller.servlets.auth;
 
+/* dfd
 import auth.AuthContext;
 import auth.AuthContextFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,17 +20,7 @@ import java.io.IOException;
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
-    /**
-     * Вход в аккаунт
-     *
-     * @param req  an {@link HttpServletRequest} object that
-     *             contains the request the client has made
-     *             of the servlet
-     * @param resp an {@link HttpServletResponse} object that
-     *             contains the response the servlet sends
-     *             to the client
-     * @throws IOException
-     */
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         ServletContext servletContext = getServletContext();
@@ -67,7 +58,8 @@ public class LoginServlet extends HttpServlet {
         String username = userCredentialsRequest.getUsername();
         String password = userCredentialsRequest.getPassword();
 
-        return username != null && username.length() <= 255 && username.length() >=6
+        return username != null && username.length() <= 255 && username.length() >= 6
                 && password != null && password.length() <= 255 && password.length() >= 6;
     }
 }
+*/

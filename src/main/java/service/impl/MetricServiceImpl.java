@@ -3,6 +3,8 @@ package service.impl;
 import aop.annotations.Loggable;
 import domain.model.Metric;
 import domain.repository.MetricRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import service.MetricService;
 
 import java.util.List;
@@ -10,19 +12,12 @@ import java.util.List;
 /**
  * Класс, представляющий реализацию сервиса работы с метриками.
  */
+@Service
 @Loggable
+@RequiredArgsConstructor
 public class MetricServiceImpl implements MetricService {
 
     private final MetricRepository repository;
-
-    /**
-     * Конструктор класса
-     *
-     * @param repository  Репозиторий метрик.
-     */
-    public MetricServiceImpl(MetricRepository repository) {
-        this.repository = repository;
-    }
 
     /**
      * Возвращает список всех существующих метрик.

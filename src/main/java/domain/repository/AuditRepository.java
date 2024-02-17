@@ -1,14 +1,12 @@
 package domain.repository;
 
 import domain.model.AuditEvent;
-import domain.model.User;
-
-import java.time.LocalDate;
-import java.util.List;
+import org.springframework.stereotype.Repository;
 
 /**
  * Интерфейс, определяющий операции для работы с записями аудита.
  */
+@Repository
 public interface AuditRepository {
     /**
      * Сохранить данные аудита

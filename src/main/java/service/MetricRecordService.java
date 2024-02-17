@@ -3,6 +3,7 @@ package service;
 import domain.exception.NotFoundException;
 import domain.model.Metric;
 import domain.model.MetricRecord;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import java.util.Map;
  * Интерфейс, представляющий сервис работы с записями метрик.
  * Этот интерфейс определяет операции для добавления, получения и просмотра записей метрик.
  */
+@Service
 public interface MetricRecordService {
 
     /**

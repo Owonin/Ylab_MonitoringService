@@ -8,6 +8,8 @@ import domain.exception.UserNotFoundException;
 import domain.model.Role;
 import domain.model.User;
 import domain.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import service.UserService;
 
 import javax.naming.AuthenticationException;
@@ -17,21 +19,14 @@ import java.util.Set;
 /**
  * Класс, представляющий реализацию сервиса работы с пользователями.
  */
+@Service
 @Loggable
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final String USER_IS_ALREADY_PRESENT_ERROR_MESSAGE = "User with this username is already present";
 
     private final UserRepository userRepository;
-
-    /**
-     * Конструктор класса
-     *
-     * @param userRepository Репозиторий пользоветеля.
-     */
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     /**
      * Регистрирует нового пользователя с указанным именем, паролем и ролями.

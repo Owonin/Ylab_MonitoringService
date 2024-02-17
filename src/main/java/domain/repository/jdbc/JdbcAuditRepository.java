@@ -2,6 +2,8 @@ package domain.repository.jdbc;
 
 import domain.model.AuditEvent;
 import domain.repository.AuditRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 import util.DBConnectionProvider;
 
 import java.sql.*;
@@ -10,20 +12,13 @@ import java.time.LocalDate;
 /**
  *
  */
+@Repository
+@RequiredArgsConstructor
 public class JdbcAuditRepository implements AuditRepository {
 
     private final String insertUserSql = "INSERT INTO private_schema.events (event, user_id, event_time) VALUES (?,?,?)";
 
     private final DBConnectionProvider connectionProvider;
-
-    /**
-     * Конструктор репозитория
-     *
-     * @param connectionProvider Данные о соединении
-     */
-    public JdbcAuditRepository(DBConnectionProvider connectionProvider) {
-        this.connectionProvider = connectionProvider;
-    }
 
     /**
      * Сохранить данные аудита

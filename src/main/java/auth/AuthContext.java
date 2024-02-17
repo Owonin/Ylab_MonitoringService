@@ -1,8 +1,8 @@
 package auth;
 
+import domain.exception.MyAuthenticationException;
 import domain.model.Role;
 
-import javax.naming.AuthenticationException;
 import java.util.Set;
 
 /**
@@ -34,9 +34,8 @@ public class AuthContext {
      *
      * @param user Пользователь для аутентификации.
      * @return Детали аутентифицированного пользователя.
-     * @throws AuthenticationException Если пользователь уже аутентифицирован.
      */
-    public UserDetails authenticateUser(UserDetails user) throws AuthenticationException {
+    public UserDetails authenticateUser(UserDetails user) {
         if (isUserAuthenticated()) {
             throwAuthenticateErrorWithFormatMessage();
         }
@@ -48,8 +47,8 @@ public class AuthContext {
     /**
      * Вызывает ошибку аутентификации.
      */
-    private void throwAuthenticateErrorWithFormatMessage() throws AuthenticationException {
-        throw new AuthenticationException(String.format(ERROR_MESSAGE, currentUser.getUsername()));
+    private void throwAuthenticateErrorWithFormatMessage() throws MyAuthenticationException {
+        throw new MyAuthenticationException(String.format(ERROR_MESSAGE, currentUser.getUsername()));
     }
 
     /**
@@ -63,9 +62,8 @@ public class AuthContext {
      * Возвращает роли текущего аутентифицированного пользователя.
      *
      * @return Набор ролей текущего пользователя.
-     * @throws AuthenticationException Если пользователь не аутентифицирован.
      */
-    public Set<Role> getCurrentUserRoles() throws AuthenticationException {
+    public Set<Role> getCurrentUserRoles() {
         if (!isUserAuthenticated()) {
             throwAuthenticateErrorWithFormatMessage();
         }
@@ -77,9 +75,8 @@ public class AuthContext {
      * Возвращает имя текущего аутентифицированного пользователя.
      *
      * @return Имя текущего пользователя.
-     * @throws AuthenticationException Если пользователь не аутентифицирован.
      */
-    public String getCurrentUsername() throws AuthenticationException {
+    public String getCurrentUsername() {
         if (!isUserAuthenticated()) {
             throwAuthenticateErrorWithFormatMessage();
         }

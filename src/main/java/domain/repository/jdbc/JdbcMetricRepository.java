@@ -2,6 +2,8 @@ package domain.repository.jdbc;
 
 import domain.model.Metric;
 import domain.repository.MetricRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 import util.DBConnectionProvider;
 
 import java.sql.ResultSet;
@@ -16,22 +18,14 @@ import java.util.Optional;
 /**
  * Класс, реализующий взаимодействие с таблицей метрик на основе JDBC.
  */
+@Repository
+@RequiredArgsConstructor
 public class JdbcMetricRepository implements MetricRepository {
 
     public static final String RETRIEVE_USERS_SQL = "SELECT * FROM private_schema.metrics";
     public static final String FIND_USER_BY_ID_SQL = "SELECT * FROM private_schema.metrics WHERE name = ?";
     public static final String INSERT_USER_SQL = "INSERT INTO private_schema.metrics (name) VALUES (?)";
     private final DBConnectionProvider connectionProvider;
-
-    /**
-     * Конструктор репозитория
-     *
-     * @param connectionProvider Данные для присоединения к БД
-     */
-    public JdbcMetricRepository(DBConnectionProvider connectionProvider) {
-        this.connectionProvider = connectionProvider;
-    }
-
 
     /**
      * Добавляет новую метрику в репозиторий.

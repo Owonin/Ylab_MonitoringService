@@ -1,6 +1,7 @@
 package domain.repository;
 
 import domain.model.Metric;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,6 +9,7 @@ import java.util.Optional;
 /**
  * Интерфейс, определяющий операции для работы с метриками в репозитории.
  */
+@Repository
 public interface MetricRepository {
 
     /**

@@ -7,25 +7,21 @@ import domain.model.User;
 import domain.repository.MetricRecordRepository;
 import domain.repository.MetricValueRepository;
 import domain.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 import util.DBConnectionProvider;
 
 import java.sql.Date;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.PreparedStatement;
-import java.sql.Connection;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 
 /**
  * Класс, реализующий взаимодействие с таблицей записи метрик на основе JDBC.
  */
+@Repository
+@RequiredArgsConstructor
 public class JdbcMetricRecordRepository implements MetricRecordRepository {
 
     public static final String INSERT_INTO_METRICS_RECORD = "INSERT INTO private_schema.metric_records " +
@@ -41,15 +37,6 @@ public class JdbcMetricRecordRepository implements MetricRecordRepository {
 
     private final DBConnectionProvider connectionProvider;
     private final MetricValueRepository metricValueRepository = new JdbcMetricValueRepository();
-
-    /**
-     * Конструктор репозитория
-     *
-     * @param connectionProvider Данные о присоединении к БД
-     */
-    public JdbcMetricRecordRepository(DBConnectionProvider connectionProvider) {
-        this.connectionProvider = connectionProvider;
-    }
 
     /**
      * Возвращает последнюю запись метрик для указанного пользователя.
@@ -168,7 +155,7 @@ public class JdbcMetricRecordRepository implements MetricRecordRepository {
         int userId = resultSet.getInt("user_id");
 
         UserRepository userRepository = new JdbcUserRepository(connectionProvider);
-         User user = userRepository.findUserById(userId).orElseThrow(() -> new UserNotFoundException("User is not found"));
+        User user = userRepository.findUserById(userId).orElseThrow(() -> new UserNotFoundException("User is not found"));
 
         return new MetricRecord(id, metrics, metricDate, user);
     }
@@ -177,9 +164,9 @@ public class JdbcMetricRecordRepository implements MetricRecordRepository {
      * Сохранение записи метрики в БД.
      *
      * @param connection Соединение с БД
-     * @param metric Запись о метрике
-     * @param user Пользователь создавший запись
-     * @return  Запись о метрике, если запись сохранена, иначе null
+     * @param metric     Запись о метрике
+     * @param user       Пользователь создавший запись
+     * @return Запись о метрике, если запись сохранена, иначе null
      * @throws SQLException Ошибка выполнения SQL
      */
     private MetricRecord saveToMetricRecordTable(Connection connection, MetricRecord metric, User user) throws SQLException {

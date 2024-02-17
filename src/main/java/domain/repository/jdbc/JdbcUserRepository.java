@@ -3,6 +3,8 @@ package domain.repository.jdbc;
 import domain.model.Role;
 import domain.model.User;
 import domain.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 import util.DBConnectionProvider;
 
 import java.sql.ResultSet;
@@ -10,15 +12,14 @@ import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.Connection;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * Класс, реализующий взаимодействие с таблицей пользователей на основе JDBC.
  */
+@Repository
+@RequiredArgsConstructor
 public class JdbcUserRepository implements UserRepository {
 
     public static final String INSERT_USER_SQL = "INSERT INTO private_schema.users (username, password) VALUES (?, ?)";
@@ -27,11 +28,10 @@ public class JdbcUserRepository implements UserRepository {
     public static final String FIND_ROLES_BY_USER_ID = "SELECT role_id FROM private_schema.user_roles WHERE user_id = ?";
     public static final String INSERT_INTO_USER_ROLES = "INSERT INTO private_schema.user_roles (user_id, role_id) VALUES (?, ?)";
     public static final String RETRIEVE_USERS_SQL = "SELECT * FROM private_schema.users";
-    private final DBConnectionProvider connectionProvider;
+    public static final String GET_USER_ROLES = "SELECT r.name FROM private_schema.user_roles ur " +
+            "JOIN private_schema.roles r ON ur.role_id = r.id WHERE ur.user_id = ?";
 
-    public JdbcUserRepository(DBConnectionProvider connectionProvider) {
-        this.connectionProvider = connectionProvider;
-    }
+    private final DBConnectionProvider connectionProvider;
 
     /**
      * Возвращает список всех пользователей из репозитория.
@@ -44,7 +44,7 @@ public class JdbcUserRepository implements UserRepository {
         try (Connection connection = connectionProvider.getConnection()) {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(RETRIEVE_USERS_SQL);
-            users = ResultSetToUserListMapper(resultSet);
+            users = ResultSetToUserListMapper(resultSet,connection);
         } catch (SQLException e) {
             System.out.println("Ошибка во время выполнения SQL запроса " + e.getMessage());
         }
@@ -136,7 +136,7 @@ public class JdbcUserRepository implements UserRepository {
             preparedStatement.setInt(1, id);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                List<User> users = ResultSetToUserListMapper(resultSet);
+                List<User> users = ResultSetToUserListMapper(resultSet,connection);
                 if (!users.isEmpty()) {
                     return Optional.of(users.get(0));
                 }
@@ -161,7 +161,7 @@ public class JdbcUserRepository implements UserRepository {
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
 
-                List<User> users = ResultSetToUserListMapper(resultSet);
+                List<User> users = ResultSetToUserListMapper(resultSet,connection);
                 if (users.isEmpty())
                     return Optional.empty();
                 User user = users.get(0);
@@ -210,16 +210,31 @@ public class JdbcUserRepository implements UserRepository {
      * @return Список пользователей
      * @throws SQLException Ошибка выполнения SQL
      */
-    private List<User> ResultSetToUserListMapper(ResultSet resultSet) throws SQLException {
+    private List<User> ResultSetToUserListMapper(ResultSet resultSet, Connection connection) throws SQLException {
         ArrayList<User> users = new ArrayList<>();
 
         while (resultSet.next()) {
             int userId = resultSet.getInt("id");
             String username = resultSet.getString("username");
             String password = resultSet.getString("password");
-            users.add(new User(userId, username, password));
+            Set<Role> roles = getUserRolesSet(userId, connection);
+            users.add(new User(userId, username, password, roles));
         }
 
         return users;
+    }
+
+    private Set<Role> getUserRolesSet(int userId, Connection connection) throws SQLException {
+        Set<Role> roles= new HashSet<>();
+        try (PreparedStatement statement = connection.prepareStatement(GET_USER_ROLES)) {
+
+            statement.setInt(1, userId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    roles.add(Role.getById(resultSet.getInt("role_id")));
+                }
+            }
+            return roles;
+        }
     }
 }

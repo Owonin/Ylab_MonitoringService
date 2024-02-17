@@ -1,5 +1,7 @@
 package auth;
 
+import org.springframework.stereotype.Component;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
@@ -8,6 +10,7 @@ import java.util.TimerTask;
 /**
  * Фабрика сессий
  */
+@Component
 public class AuthContextFactory {
     private static final Map<String, AuthContext> contextMap = new HashMap<>();
     private static final long CONTEXT_EXPIRATION_TIME = 30 * 60 * 1000; // 30 минут

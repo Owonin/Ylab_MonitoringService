@@ -1,11 +1,11 @@
 package domain.repository;
 
-import domain.model.Metric;
 import domain.model.MetricRecord;
+import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
-import java.util.Map;
 
+@Repository
 public interface MetricValueRepository {
 
     /**

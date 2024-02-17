@@ -1,6 +1,7 @@
 package domain.repository;
 
 import domain.model.User;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,6 +9,7 @@ import java.util.Optional;
 /**
  * Интерфейс, определяющий операции для работы с пользователями в репозитории.
  */
+@Repository
 public interface UserRepository {
 
     /**
@@ -23,7 +25,7 @@ public interface UserRepository {
      * @param user Пользователь, который должен быть сохранен.
      * @return Опциональный объект, содержащий пользователя.
      */
-    User save(User user); //todo Optional
+    User save(User user);
 
     /**
      * Находит пользователя в репозитории по его идентификатору.

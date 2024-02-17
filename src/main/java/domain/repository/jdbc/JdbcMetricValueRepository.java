@@ -3,12 +3,13 @@ package domain.repository.jdbc;
 import domain.model.Metric;
 import domain.model.MetricRecord;
 import domain.repository.MetricValueRepository;
-import util.DBConnectionProvider;
+import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+@Repository
 public class JdbcMetricValueRepository implements MetricValueRepository {
 
     public static final String INSERT_INTO_METRIC_VALUES = "INSERT INTO private_schema.metric_values " +
