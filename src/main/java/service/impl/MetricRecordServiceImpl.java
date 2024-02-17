@@ -1,5 +1,6 @@
 package service.impl;
 
+import aop.annotations.Loggable;
 import domain.exception.MetricRecordNotFoundException;
 import domain.exception.NotFoundException;
 import domain.exception.UserNotFoundException;
@@ -19,6 +20,7 @@ import java.util.Map;
 /**
  * Класс, представляющий реализацию сервиса работы с записями о метриках.
  */
+@Loggable
 public class MetricRecordServiceImpl implements MetricRecordService {
 
     private final MetricRecordRepository metricRecordRepository;
@@ -27,8 +29,8 @@ public class MetricRecordServiceImpl implements MetricRecordService {
     /**
      * Конструктор класса
      *
-     * @param metricRecordRepository    Репозиторий записей метрик.
-     * @param userRepository            Репозиторий пользователей.
+     * @param metricRecordRepository Репозиторий записей метрик.
+     * @param userRepository         Репозиторий пользователей.
      */
     public MetricRecordServiceImpl(MetricRecordRepository metricRecordRepository, UserRepository userRepository) {
         this.metricRecordRepository = metricRecordRepository;
@@ -84,7 +86,7 @@ public class MetricRecordServiceImpl implements MetricRecordService {
         List<MetricRecord> lastMetrics = metricRecordRepository.findUserMetrics(user);
         int lastMetricsSize = lastMetrics.size();
 
-        MetricRecord newRecord = new MetricRecord(new HashMap<>(metrics), LocalDate.now(), user);
+        MetricRecord newRecord = new MetricRecord(1, new HashMap<>(metrics), LocalDate.now(), user);
 
         Month currentMonth = LocalDate.now().getMonth();
 
@@ -113,7 +115,7 @@ public class MetricRecordServiceImpl implements MetricRecordService {
      * @throws NotFoundException Если запись метрик за указанный месяц и год не найдена или пользователь с указанным именем не найден.
      */
     @Override
-    public MetricRecord getMetricRecordByMonth(int month, int year, String username) throws NotFoundException {
+    public MetricRecord getMetricRecordByMonth(String username, int month, int year) throws NotFoundException {
         LocalDate requiredDate = LocalDate.of(year, month, 1);
         User user = userRepository.findUserByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException(username));

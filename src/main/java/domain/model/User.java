@@ -14,8 +14,19 @@ import java.util.Set;
  */
 @Getter
 @Setter
-@EqualsAndHashCode
 public class User implements UserDetails {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return userId.equals(user.userId) && username.equals(user.username) && password.equals(user.password) && roles.equals(user.roles);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId, username, password, roles);
+    }
 
     private Integer userId;
     private String username;

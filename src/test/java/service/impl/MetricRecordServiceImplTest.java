@@ -40,7 +40,7 @@ class MetricRecordServiceImplTest {
         Map<Metric, Integer> metrics = new HashMap<>();
         metrics.put(new Metric(1, "electricity"), 100);
         metrics.put(new Metric(2, "water"), 100);
-        MetricRecord metricRecord = new MetricRecord(metrics, LocalDate.now(), user);
+        MetricRecord metricRecord = new MetricRecord(1,metrics, LocalDate.now(), user);
 
         List<MetricRecord> expectedMetrics = Collections.singletonList(metricRecord);
 
@@ -68,7 +68,7 @@ class MetricRecordServiceImplTest {
         Map<Metric, Integer> metrics = new HashMap<>();
         metrics.put(new Metric(1, "hotwater"), 100);
         metrics.put(new Metric(2, "coldwater"), 100);
-        MetricRecord metricRecord = new MetricRecord(metrics, LocalDate.now(), user);
+        MetricRecord metricRecord = new MetricRecord(1,metrics, LocalDate.now(), user);
 
         when(userRepository.findUserByUsername("username")).thenReturn(Optional.of(user));
         when(metricRecordRepository.findLastMetricForUser(user)).thenReturn(Optional.of(metricRecord));
@@ -84,7 +84,7 @@ class MetricRecordServiceImplTest {
         Map<Metric, Integer> metrics = new HashMap<>();
         metrics.put(new Metric(1, "electricity"), 100);
         metrics.put(new Metric(2, "water"), 100);
-        MetricRecord metricRecord = new MetricRecord(metrics, LocalDate.now().minusMonths(1), user);
+        MetricRecord metricRecord = new MetricRecord(1,metrics, LocalDate.now().minusMonths(1), user);
 
         when(userRepository.findUserByUsername("username")).thenReturn(Optional.of(user));
         when(metricRecordRepository.findUserMetrics(user)).thenReturn(Collections.singletonList(metricRecord));
@@ -101,7 +101,7 @@ class MetricRecordServiceImplTest {
         Map<Metric, Integer> metrics = new HashMap<>();
         metrics.put(new Metric(1, "electricity"), 100);
         metrics.put(new Metric(2, "water"), 100);
-        MetricRecord metricRecord = new MetricRecord(metrics, LocalDate.now(), user);
+        MetricRecord metricRecord = new MetricRecord(1,metrics, LocalDate.now(), user);
 
         when(userRepository.findUserByUsername("username")).thenReturn(Optional.of(user));
         when(metricRecordRepository.findUserMetrics(user)).thenReturn(Collections.singletonList(metricRecord));
@@ -117,12 +117,12 @@ class MetricRecordServiceImplTest {
         Map<Metric, Integer> metrics = new HashMap<>();
         metrics.put(new Metric(1, "hotwater"), 100);
         metrics.put(new Metric(2, "coldwater"), 100);
-        MetricRecord metricRecord = new MetricRecord(metrics, LocalDate.of(1999, 12, 11), user);
+        MetricRecord metricRecord = new MetricRecord(1,metrics, LocalDate.of(1999, 12, 11), user);
 
         when(userRepository.findUserByUsername("username")).thenReturn(Optional.of(user));
         when(metricRecordRepository.findUserMetrics(user)).thenReturn(Collections.singletonList(metricRecord));
 
-        MetricRecord actualMetricRecord = metricRecordService.getMetricRecordByMonth(12, 1999, "username");
+        MetricRecord actualMetricRecord = metricRecordService.getMetricRecordByMonth("username", 12, 1999);
         assertEquals(metricRecord, actualMetricRecord);
     }
 
@@ -133,12 +133,12 @@ class MetricRecordServiceImplTest {
         Map<Metric, Integer> metrics = new HashMap<>();
         metrics.put(new Metric(1, "hotwater"), 100);
         metrics.put(new Metric(2, "coldwater"), 100);
-        MetricRecord metricRecord = new MetricRecord(metrics, LocalDate.of(2000, 11, 11), user);
+        MetricRecord metricRecord = new MetricRecord(1,metrics, LocalDate.of(2000, 11, 11), user);
 
         when(userRepository.findUserByUsername("username")).thenReturn(Optional.of(user));
         when(metricRecordRepository.findUserMetrics(user)).thenReturn(Collections.singletonList(metricRecord));
 
 
-        assertThrows(NotFoundException.class, () -> metricRecordService.getMetricRecordByMonth(12, 1999, "username"));
+        assertThrows(NotFoundException.class, () -> metricRecordService.getMetricRecordByMonth("username",12, 1999));
     }
 }

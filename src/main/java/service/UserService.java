@@ -1,5 +1,6 @@
 package service;
 
+import auth.AuthContext;
 import domain.exception.NotFoundException;
 import domain.model.Role;
 import domain.model.User;
@@ -32,7 +33,7 @@ public interface UserService {
      * @throws NotFoundException       Если пользователь с указанным именем не найден.
      * @throws AuthenticationException Если не удалось выполнить вход в систему.
      */
-    void login(String username, String password) throws NotFoundException, AuthenticationException;
+    void login(String username, String password, AuthContext authContext) throws NotFoundException, AuthenticationException;
 
     /**
      * Выполняет поиск всех пользователей в репозитории

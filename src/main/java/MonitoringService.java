@@ -1,7 +1,13 @@
 import auth.AuthContext;
-import domain.repository.*;
-import domain.repository.jdbc.*;
-import in.AppUI;
+import domain.repository.AuditRepository;
+import domain.repository.MetricRecordRepository;
+import domain.repository.MetricRepository;
+import domain.repository.UserRepository;
+import domain.repository.jdbc.JdbcAuditRepository;
+import domain.repository.jdbc.JdbcMetricRecordRepository;
+import domain.repository.jdbc.JdbcMetricRepository;
+import domain.repository.jdbc.JdbcUserRepository;
+import in.cli.AppUI;
 import service.AuditService;
 import service.MetricRecordService;
 import service.MetricService;
@@ -42,7 +48,7 @@ public class MonitoringService {
         AuditRepository auditRepository = new JdbcAuditRepository(connectionProvider);
 
         // Создание сервисов для работы с пользователями, записями о показаниях и метриками
-        UserService userService = new UserServiceImpl(userRepository, authContext);
+        UserService userService = new UserServiceImpl(userRepository);
         MetricRecordService meterRecordService = new MetricRecordServiceImpl(metricRecordRepository, userRepository);
         MetricService metricService = new MetricServiceImpl(metricRepository);
         AuditService auditService = new AuditServiceImpl(auditRepository, userRepository);
