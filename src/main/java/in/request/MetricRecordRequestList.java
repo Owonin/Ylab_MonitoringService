@@ -15,8 +15,4 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MetricRecordRequestList {
     List<MetricRecordRequest> metrics;
-
-    public boolean isValid() {
-        return metrics != null && metrics.stream().allMatch(MetricRecordRequest::isValid);
-    }
 }

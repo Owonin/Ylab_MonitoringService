@@ -3,7 +3,6 @@ package util;
 import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 
 public class MockServletInputStream extends ServletInputStream {
     private final ByteArrayInputStream inputStream;

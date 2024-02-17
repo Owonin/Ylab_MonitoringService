@@ -7,7 +7,8 @@ import out.dto.UserDto;
 
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class UserMapperTest {
 
@@ -26,5 +27,20 @@ class UserMapperTest {
 
     @Test
     void userToUserDto() {
+        //given
+        UserDto userDto = new UserDto();
+
+        userDto.setUserId(1);
+        userDto.setPassword("psw");
+        userDto.setRoles(Set.of(Role.USER.name()));
+        userDto.setUsername("username");
+
+        //when
+        User user = UserMapper.INSTANCE.userDtoToUser( userDto );
+
+        //then
+        assertNotNull( userDto );
+        assertEquals(user.getPassword(),userDto.getPassword());
+        assertEquals(user.getUsername(),userDto.getUsername());
     }
 }

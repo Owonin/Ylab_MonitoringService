@@ -39,7 +39,7 @@ public class RegistrationServlet extends HttpServlet {
         UserCredentialsRequest userCredentials = objectMapper.readValue(req.getInputStream(), UserCredentialsRequest.class);
 
         try {
-            if (userCredentials.isValid()) {
+            if (isValid(userCredentials)) {
                 userService.registrateUser(userCredentials.getUsername(), userCredentials.getPassword(), Set.of(Role.USER));
                 resp.setStatus(HttpServletResponse.SC_CREATED);
             } else {
@@ -52,5 +52,13 @@ public class RegistrationServlet extends HttpServlet {
             byte[] errorMessage = objectMapper.writeValueAsBytes(e.getMessage());
             resp.getOutputStream().write(errorMessage);
         }
+    }
+
+    public boolean isValid(UserCredentialsRequest userCredentialsRequest) {
+        String username = userCredentialsRequest.getUsername();
+        String password = userCredentialsRequest.getPassword();
+
+        return username != null && username.length() <= 255 && username.length() >= 6
+                && password != null && password.length() <= 255 && password.length() >= 6;
     }
 }

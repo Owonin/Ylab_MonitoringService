@@ -146,7 +146,6 @@
                             <artifactId>mapstruct-processor</artifactId>
                             <version>1.5.5.Final</version>
                         </path>
-                        <!-- Lombok annotation processors -->
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
@@ -175,23 +174,17 @@
                     <verbose>true</verbose>
                     <Xlint>ignore</Xlint>
                     <encoding>UTF-8</encoding>
-
-
-                    <!-- IMPORTANT-->
                     <excludes>
                         <exclude>**/*.java</exclude>
                     </excludes>
                     <forceAjcCompile>true</forceAjcCompile>
                     <sources/>
-                    <!-- IMPORTANT-->
-
                 </configuration>
                 <executions>
                     <execution>
                         <id>default-compile</id>
                         <phase>process-classes</phase>
                         <goals>
-                            <!-- use this goal to weave all your main classes -->
                             <goal>compile</goal>
                         </goals>
                         <configuration>

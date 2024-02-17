@@ -15,21 +15,22 @@ import util.ServletErrorHandler;
 
 import javax.naming.AuthenticationException;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@WebServlet("/metric_record")
+@WebServlet("/metric-records")
 public class MetricRecordServlet extends HttpServlet {
 
+    public static final String CONTENT_TYPE = "application/json";
     private ObjectMapper objectMapper;
     private MetricRecordService metricRecordService;
 
@@ -51,8 +52,8 @@ public class MetricRecordServlet extends HttpServlet {
         objectMapper = (ObjectMapper) servletContext.getAttribute("objectMapper");
         AuthContextFactory authContextFactory = (AuthContextFactory) servletContext.getAttribute("authContextFactory");
 
-        resp.setContentType("application/json");
-        resp.setCharacterEncoding("UTF-8");
+        resp.setContentType(CONTENT_TYPE);
+        resp.setCharacterEncoding(StandardCharsets.UTF_8.name());
 
         HttpSession session = req.getSession();
 
@@ -103,7 +104,7 @@ public class MetricRecordServlet extends HttpServlet {
 
         Map<Metric, Integer> metricMap = new HashMap<>();
 
-        if (recordRequestList.isValid()) {
+        if (isValid(recordRequestList)) {
             for (MetricRecordRequest recordRequest : recordRequestList.getMetrics()) {
                 metricMap.put(recordRequest.getMetric(), recordRequest.getValue());
             }
@@ -127,5 +128,12 @@ public class MetricRecordServlet extends HttpServlet {
         } catch (AuthenticationException e) {
             ServletErrorHandler.handleErrorMessage(resp, e.getMessage(), HttpServletResponse.SC_FORBIDDEN, objectMapper);
         }
+    }
+
+    public boolean isValid(MetricRecordRequestList metricRecordRequestList) {
+        List<MetricRecordRequest> metrics = metricRecordRequestList.getMetrics();
+
+        return metrics != null && metrics.stream()
+                .allMatch(metric -> (metric.getMetric() != null && metric.getValue() != null));
     }
 }

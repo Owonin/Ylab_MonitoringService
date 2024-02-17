@@ -15,8 +15,4 @@ import lombok.Setter;
 public class MetricRecordRequest {
     private Metric metric;
     private Integer value;
-
-    public boolean isValid() {
-        return metric != null && value != null;
-    }
 }

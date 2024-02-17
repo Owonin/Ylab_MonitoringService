@@ -40,7 +40,7 @@ class RegistrationServletTest {
     @Mock
     private UserService userService;
 
-    ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @InjectMocks
     private RegistrationServlet registrationServlet;
