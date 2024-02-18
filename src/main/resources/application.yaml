@@ -1,9 +1,7 @@
-server:
-  port: 8080
-
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/ylabDB
-    username: root
-    password: password
+    url: jdbc:postgresql://localhost:54322/ylabDB
+    username: user
+    password: psw
     defaultSchema: liquibaseDefault
+    changelogFile: db.changelog/test_changelog.xml
