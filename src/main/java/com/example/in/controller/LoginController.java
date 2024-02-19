@@ -53,7 +53,7 @@ public class LoginController {
         String username = userCredentialsRequest.getUsername();
         String password = userCredentialsRequest.getPassword();
 
-        return username != null && username.length() <= 255 && username.length() >= 3
-                && password != null && password.length() <= 255 && password.length() >= 3;
+        return username != null && username.length() <= 255 && username.length() >= 6
+                && password != null && password.length() <= 255 && password.length() >= 6;
     }
 }
