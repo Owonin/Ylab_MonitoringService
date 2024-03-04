@@ -1,5 +1,8 @@
 package auth;
 
+import com.example.auth.AuthContext;
+import com.example.auth.UserDetails;
+import com.example.domain.exception.MyAuthenticationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -50,7 +53,7 @@ public class AuthContextTest {
         when(mockUser.getUsername()).thenReturn("testUser");
 
         Assertions.assertDoesNotThrow(() -> authContext.authenticateUser(mockUser));
-        AuthenticationException exception = assertThrows(AuthenticationException.class,
+        MyAuthenticationException exception = assertThrows(MyAuthenticationException.class,
                 () -> authContext.authenticateUser(mockUser));
 
         assertEquals("Пользователь testUser уже аутентифицирован", exception.getMessage());

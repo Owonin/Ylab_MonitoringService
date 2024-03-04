@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:54322/ylabDB
+    username: user
+    password: psw
+    defaultSchema: liquibaseDefault
+    changelogFile: db.changelog/test_changelog.xml
